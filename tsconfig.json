@@ -109,6 +109,10 @@
     "outDir": "./dist",
     "baseUrl": "./",                                  
     "paths": {
+      "@config": ["src/config/*"],
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"],
+      "@controllers/*": ["src/controllers/*"],
       "@services/*": ["src/services/*"],
       "@utils/*": ["src/utils/*"]
     },
