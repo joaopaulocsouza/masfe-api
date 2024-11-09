@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from  "dotenv"
 import userRoutes from "@routes/userRoutes"
 import verbRoutes from "@routes/verbRoutes";
-import prisma from "./config/db";
+import accetanceCriteriaRoutes from "@routes/acceptanceCriteriaRoutes";
+import personaRoutes from "@routes/personaRoutes";
+import uxCorrelationRoutes from "@routes/uxCorrelation";
 
 dotenv.config();
 const app = express();
@@ -11,10 +13,11 @@ app.use(express.json());
 
 app.use('/users', userRoutes)
 app.use('/verbs', verbRoutes)
+app.use('/acceptance-criteria', accetanceCriteriaRoutes)
+app.use('/personas', personaRoutes)
+app.use('/ux-correlation', uxCorrelationRoutes)
 
 
-
-// Inicializar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

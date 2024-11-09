@@ -34,7 +34,8 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
   }
   catch(e: any){
-    res.status(500).json(handleError(e))
+    console.log(e)
+    res.status(500).json({})
   }
 };
 
