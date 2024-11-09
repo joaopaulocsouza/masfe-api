@@ -2,32 +2,39 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { encrypt } from "@utils/hash/hash";
+import { handleError, missingField } from "@utils/handleError/handleError";
 
 const createUser = async (req: Request, res: Response) => {
+  if(!req.body.email || !req.body.password || !req.body.password || !req.body.birthday){
+    res.status(400).json(missingField)
+  }
   try{
     const password = await encrypt(req.body.password)
-    console.log({name: "joao", email: "joao", password: "12355"})
-    const user = await prisma.user.create({data: {name: "joao", email: "joao", password: "12355"}})
+    const user = await prisma.user.create({data: {...req.body, password}})
     res.status(201).json(user)
-  }catch(e){
-    res.status(500)
+  }catch(e: any){
+    res.status(500).json(handleError(e))
   }
 };
 
 const getAllUsers = async (req: Request, res: Response) => {
   const {id} = req.query
-
-  if(id){
-    const users = await prisma.user.findUnique({where: {
-      id: id.toString(),
-    }})
-    if(!users){
-      res.status(404).json({message: "Usuário não encontrado"})
+  try{
+    if(id){
+      const users = await prisma.user.findUnique({where: {
+        id: id.toString(),
+      }})
+      if(!users){
+        res.status(404).json({message: "Usuário não encontrado"})
+      }
+      res.status(200).json(users)
+    } else {
+      const users = await prisma.user.findMany()
+      res.status(200).json(users)
     }
-    res.status(201).json(users)
-  } else {
-    const users = await prisma.user.findMany()
-    res.status(201).json(users)
+  }
+  catch(e: any){
+    res.status(500).json(handleError(e))
   }
 };
 
@@ -37,15 +44,14 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const {id, ...data} = req.body
     const user = await prisma.user.update({data, where: {id: id}})
-    res.status(201).json(user)
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    res.status(200).json(user)
+  }catch(e: any){
+    res.status(500).json(handleError(e))
   }
 };
 
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.query
-  console.log(id)
   if(!id){
     res.status(404).json({ message: 'User not found' });
   }
@@ -56,8 +62,8 @@ const deleteUser = async (req: Request, res: Response) => {
     } else {
       res.status(404).json({ message: 'User not found' });
     }
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+  } catch(e: any){
+    res.status(500).json(handleError(e))
   }
 }
 

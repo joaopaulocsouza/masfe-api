@@ -17,8 +17,22 @@ model User {
   password   String
   gender     String?
   occupation String?
-  endereco   String?
+  address    String?
   birthday   DateTime?
 
+  verbs Verb[]
+
   @@map("users")
+}
+
+model Verb {
+  id        String @id @default(uuid())
+  verb      String @unique
+  garret    Int
+  dimension Int
+  user_id   String
+  user      User   @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], name: "user_id_fk")
+  @@map("verb")
 }
