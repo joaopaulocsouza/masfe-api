@@ -68,7 +68,7 @@ const deleteUxCorrelation  = async (req: Request, res: Response) => {
             if (ux) {
                 res.status(200).json(ux);
             } else {
-                res.status(404).json({ message: 'UC correlation não encontrada' });
+                res.status(404).json({ message: 'UX correlation não encontrada' });
             }
         } catch (err: any) {
             res.status(500).json({ error: err.message });

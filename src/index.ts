@@ -5,6 +5,7 @@ import verbRoutes from "@routes/verbRoutes";
 import accetanceCriteriaRoutes from "@routes/acceptanceCriteriaRoutes";
 import personaRoutes from "@routes/personaRoutes";
 import uxCorrelationRoutes from "@routes/uxCorrelation";
+import detailsVerbACRoutes from "@routes/detailsVerbACRoutes";
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,7 @@ app.use('/users', userRoutes)
 app.use('/verbs', verbRoutes)
 app.use('/acceptance-criteria', accetanceCriteriaRoutes)
 app.use('/personas', personaRoutes)
+app.use('/verb-ac', detailsVerbACRoutes)
 app.use('/ux-correlation', uxCorrelationRoutes)
 
 
