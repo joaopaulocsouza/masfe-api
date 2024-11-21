@@ -7,7 +7,7 @@ const createVerb = async (req: Request, res: Response) => {
         res.status(400).json(missingField)
     }
     try{
-        const verb = await prisma.verb.create({data: req.body})
+        const verb = await prisma.verb.create({data: {...req.body, user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4"}})
         res.status(201).json(verb)
     }catch(e: any){
         res.status(500).json(handleError(e))
@@ -15,7 +15,7 @@ const createVerb = async (req: Request, res: Response) => {
 };
 
 const getVerb = async (req: Request, res: Response) => {
-  const {id, user_id} = req.query
+  const {id, user} = req.query
   try{      
       if(id){
           const verb = await prisma.verb.findUnique({where: {
@@ -25,16 +25,16 @@ const getVerb = async (req: Request, res: Response) => {
                 res.status(404).json({message: "Verbo não encontrado"})
             }
             res.status(200).json(verb)
-        } else if(user_id){
+        } else if(user){
             const verbs = await prisma.verb.findMany({where: {
-                user_id: user_id.toString(),
-            }})
+                user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4",
+            }, select: {user: {select: {name: true}}, dimension: true, garret: true, id: true, verb: true}})
             if(!verbs){
                 res.status(404).json({message: "Nenhum verbo encontrado"})
             }
             res.status(200).json(verbs)
         }else {
-            const verbs = await prisma.verb.findMany()
+            const verbs = await prisma.verb.findMany({select: {user: {select: {name: true}}, dimension: true, garret: true, id: true, verb: true}})
             res.status(200).json(verbs)
         }
     }catch(e: any){

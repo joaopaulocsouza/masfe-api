@@ -9,4 +9,9 @@ export const handleError = (e: Prisma.PrismaClientKnownRequestError) => {
     }
 }
 
-export const missingField = {code: "ERR-001", message: "Um ou mais campos obrigatórios não foram preenchidos"}
+export const missingField = {code: "MISSING_FIELDS", message: "Um ou mais campos obrigatórios não foram preenchidos"}
+export const unauthorized = {code: 'UNAUTHORIZED', message: 'Acesso não autorizado'}
+export const invalidCredentials = {code: 'INVALID_CREDENTIALS', message: 'Email e/ou senha inválido(s)'}
+
+
+export default {handleError, missingField, unauthorized, invalidCredentials }

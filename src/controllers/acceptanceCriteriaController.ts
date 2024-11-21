@@ -3,19 +3,20 @@ import prisma from "../config/db";
 import { handleError, missingField } from "@utils/handleError/handleError";
 
 const createAcceptanceCriteria = async (req: Request, res: Response) => {
-    if(!req.body.criteria){
+    if(!req.body.criteria || !req.body.dimension){
         res.status(400).json(missingField)
     }
     try{
-        const ac = await prisma.accetanceCriteria.create({data: req.body})
-        res.status(201).json(ac)
+        await prisma.accetanceCriteria.create({data: {...req.body,  user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4"}})
+        res.status(201).json({code: "CREATE_SUCESS", message: "Critério de aceitação cadastrado com sucesso"})
     }catch(e: any){
+        console.log(e)
         res.status(500).json(handleError(e))
     }
 };
 
 const getAcceptanceCriteria = async (req: Request, res: Response) => {
-  const {id, user_id} = req.query
+  const {id, user} = req.query
   try{      
       if(id){
           const ac = await prisma.accetanceCriteria.findUnique({where: {
@@ -25,11 +26,12 @@ const getAcceptanceCriteria = async (req: Request, res: Response) => {
                 res.status(404).json({message: 'Critério de aceitação não encontrado'})
             }
             res.status(201).json(ac)
-        } else if(user_id){
+        } else if(user){
             const ac = await prisma.accetanceCriteria.findMany({
                 where: {
-                    user_id: user_id.toString()
+                    user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4"
                 },
+                select: {criteria: true, dimension: true, user: {select: {name: true}}}
             })
             if(!ac){
                 res.status(404).json({message: 'Nenhum critério de aceitação foi encontrado'})

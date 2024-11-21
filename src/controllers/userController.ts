@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 import { encrypt } from "@utils/hash/hash";
 import { handleError, missingField } from "@utils/handleError/handleError";
+import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
 
 const createUser = async (req: Request, res: Response) => {
   if(!req.body.email || !req.body.password || !req.body.password || !req.body.birthday){
@@ -19,6 +20,8 @@ const createUser = async (req: Request, res: Response) => {
 
 const getAllUsers = async (req: Request, res: Response) => {
   const {id} = req.query
+
+
   try{
     if(id){
       const users = await prisma.user.findUnique({where: {

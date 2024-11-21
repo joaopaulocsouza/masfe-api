@@ -2,20 +2,20 @@ import { Request, Response } from "express";
 import prisma from "../config/db";
 import { handleError, missingField } from "@utils/handleError/handleError";
 
-const createDetailsVerbAC = async (req: Request, res: Response) => {
+const createVerbAC = async (req: Request, res: Response) => {
     try{
-        const detail = await prisma.detailsVerbAC.create({data: req.body})
+        const detail = await prisma.verbAC.create({data: req.body})
         res.status(201).json(detail)
     }catch(e: any){
         res.status(500).json(handleError(e))
     }
 };
 
-const getDetailVerbAC = async (req: Request, res: Response) => {
+const getVerbAC = async (req: Request, res: Response) => {
   const {id, verb_id, ac_id} = req.query
   try{      
       if(id){
-          const detail = await prisma.detailsVerbAC.findUnique({where: {
+          const detail = await prisma.verbAC.findUnique({where: {
               id: id.toString(),
             }})
             if(!detail){
@@ -23,12 +23,12 @@ const getDetailVerbAC = async (req: Request, res: Response) => {
             }
             res.status(201).json(detail)
         } else if(verb_id){
-            const detail = await prisma.detailsVerbAC.findMany({
+            const detail = await prisma.verbAC.findMany({
                 where: {
                     verb_id: verb_id.toString()
                 },
                 select: {
-                    acs: true
+                    ac: true
                 }
             })
             if(!detail){
@@ -37,7 +37,7 @@ const getDetailVerbAC = async (req: Request, res: Response) => {
             res.status(200).json(detail)
         }
         else if(ac_id){
-            const detail = await prisma.detailsVerbAC.findMany({
+            const detail = await prisma.verbAC.findMany({
                 where: {
                     ac_id: ac_id.toString()
                 },
@@ -47,7 +47,7 @@ const getDetailVerbAC = async (req: Request, res: Response) => {
             }
             res.status(200).json(detail)
         }else {
-            const details = await prisma.detailsVerbAC.findMany()
+            const details = await prisma.verbAC.findMany()
             res.status(200).json(details)
         }
     }catch(e: any){
@@ -56,17 +56,17 @@ const getDetailVerbAC = async (req: Request, res: Response) => {
 };
 
 
-const updateDetailVerbAC = async (req: Request, res: Response) => {
+const updateVerbAC = async (req: Request, res: Response) => {
   try {
     const {id, ...data} = req.body
-    const detail = await prisma.detailsVerbAC.update({data, where: {id: id}})
+    const detail = await prisma.verbAC.update({data, where: {id: id}})
     res.status(200).json(detail)
   } catch(e: any){
     res.status(500).json(handleError(e))
   }
 };
 
-const deleteDetailVerbAC = async (req: Request, res: Response) => {
+const deleteVerbAC = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
 
@@ -74,7 +74,7 @@ const deleteDetailVerbAC = async (req: Request, res: Response) => {
           res.status(404).json({ message: '' });
         }
         try {
-            const detail = await prisma.detailsVerbAC.delete({where: {id: id?.toString()}});
+            const detail = await prisma.verbAC.delete({where: {id: id?.toString()}});
             if (detail) {
                 res.status(200).json(detail);
             } else {
@@ -89,4 +89,4 @@ const deleteDetailVerbAC = async (req: Request, res: Response) => {
 }
 
 
-export default { createDetailsVerbAC, getDetailVerbAC, updateDetailVerbAC, deleteDetailVerbAC }
+export default { createVerbAC, getVerbAC, updateVerbAC, deleteVerbAC }

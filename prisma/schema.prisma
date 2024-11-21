@@ -45,36 +45,36 @@ model Persona {
 }
 
 model Verb {
-  id             String          @id @default(uuid())
-  verb           String          @unique
-  garret         Int
-  dimension      Int
-  user_id        String
-  user           User            @relation(fields: [user_id], references: [id])
-  detailsVerbACs DetailsVerbAC[]
+  id        String   @id @default(uuid())
+  verb      String   @unique
+  garret    Int
+  dimension Int
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id])
+  VerbACs   VerbAC[]
 
   @@index([user_id], name: "user_id_verb_fk")
   @@map("verb")
 }
 
 model AccetanceCriteria {
-  id             String          @id @default(uuid())
-  criteria       String          @unique
-  dimension      Int
-  user_id        String
-  user           User            @relation(fields: [user_id], references: [id])
-  detailsVerbACs DetailsVerbAC[]
+  id        String   @id @default(uuid())
+  criteria  String   @unique
+  dimension Int
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id])
+  VerbACs   VerbAC[]
 
   @@index([user_id], name: "user_id_ac_fk")
   @@map("acceptance_criteria")
 }
 
-model DetailsVerbAC {
+model VerbAC {
   id             String            @id @default(uuid())
   verb_id        String
   verb           Verb              @relation(fields: [verb_id], references: [id])
   ac_id          String
-  acs            AccetanceCriteria @relation(fields: [ac_id], references: [id])
+  ac             AccetanceCriteria @relation(fields: [ac_id], references: [id])
   uxCorrelations UxCorrelation[]
 
   @@index([verb_id], name: "verb_id_details_fk")
@@ -83,15 +83,15 @@ model DetailsVerbAC {
 }
 
 model UxCorrelation {
-  id          String        @id @default(uuid())
-  name        String        @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String
   user_id     String
-  user        User          @relation(fields: [user_id], references: [id])
+  user        User    @relation(fields: [user_id], references: [id])
   verb_ac_id  String
-  details     DetailsVerbAC @relation(fields: [verb_ac_id], references: [id])
+  verb_ac     VerbAC  @relation(fields: [verb_ac_id], references: [id])
   persona_id  String
-  personas    Persona       @relation(fields: [persona_id], references: [id])
+  persona     Persona @relation(fields: [persona_id], references: [id])
 
   @@index([persona_id], name: "persona_id_ux_fk")
   @@index([verb_ac_id], name: "details_id_ux_fk")
