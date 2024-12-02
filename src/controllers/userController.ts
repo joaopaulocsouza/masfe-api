@@ -14,6 +14,7 @@ const createUser = async (req: Request, res: Response) => {
     const user = await prisma.user.create({data: {...req.body, password}})
     res.status(201).json(user)
   }catch(e: any){
+    console.log(e)
     res.status(500).json(handleError(e))
   }
 };

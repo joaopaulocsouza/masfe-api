@@ -1018,7 +1018,7 @@ node-addon-api@^5.0.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-5.1.0.tgz#49da1ca055e109a23d537e9de43c09cca21eb762"
 
-node-base64@0.0.1:
+node-base64@0.0.1, node-base64@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/node-base64/-/node-base64-0.0.1.tgz#ee3e095f97e9f4d72fb3dea98bcb2d25c8716b03"
 
@@ -1085,6 +1085,10 @@ once@^1.3.0:
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   dependencies:
     wrappy "1"
+
+openapi-types@^12.1.3:
+  version "12.1.3"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.1.3.tgz#471995eb26c4b97b7bd356aacf7b91b73e777dd3"
 
 parseurl@~1.3.3:
   version "1.3.3"

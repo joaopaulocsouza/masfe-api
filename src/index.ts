@@ -15,6 +15,11 @@ const app = express();
 app.use(express.json()); 
 
 
+app.use(cors({
+  origin: 'http://localhost:5173', // Substitua pela URL do seu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  credentials: true, // Permitir cookies, se necessário
+}));
 app.use('/users', userRoutes)
 app.use('/verbs', verbRoutes)
 app.use('/acceptance-criteria', accetanceCriteriaRoutes)

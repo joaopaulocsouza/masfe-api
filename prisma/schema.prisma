@@ -1,100 +1,88 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  url      = env("DATABASE_URL")
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String    @id @default(uuid())
-  name       String
-  email      String    @unique
-  password   String
-  gender     String?
-  occupation String?
-  address    String?
-  birthday   DateTime?
-
-  verbs             Verb[]
+  id                String              @id @default(uuid()) @db.VarChar(100)
+  name              String              @db.VarChar(255)
+  email             String              @unique @db.VarChar(100)
+  password          String              @db.VarChar(255)
+  gender            String?             @db.VarChar(30)
+  occupation        String?             @db.VarChar(100)
+  address           String?             @db.VarChar(255)
+  birthday          DateTime            @db.Date
   accptanceCriteria AccetanceCriteria[]
   personas          Persona[]
   uxCorrelations    UxCorrelation[]
+  verbs             Verb[]
 
   @@map("users")
 }
 
 model Persona {
-  id                 String          @id @default(uuid())
-  name               String
-  needs              String
-  possible_solutions String
-  occupation         String?
-  gender             String?
+  id                 String          @id @default(uuid()) @db.VarChar(100)
+  name               String          @db.VarChar(100)
+  occupation         String?         @db.VarChar(50)
+  needs              String          @db.VarChar(400)
+  possible_solutions String          @db.VarChar(400)
+  user_id            String          @db.VarChar(100)
+  gender             String?         @db.VarChar(20)
   age                Int?
-  user_id            String
-  user               User            @relation(fields: [user_id], references: [id])
+  user               User            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   uxCorrelations     UxCorrelation[]
 
-  @@index([user_id], name: "user_id_persona_fk")
   @@map("personas")
 }
 
 model Verb {
-  id        String   @id @default(uuid())
-  verb      String   @unique
+  id        String   @id @default(uuid()) @db.VarChar(100)
+  verb      String   @unique @db.VarChar(30)
   garret    Int
   dimension Int
-  user_id   String
-  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String   @db.VarChar(100)
   VerbACs   VerbAC[]
+  user      User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([user_id], name: "user_id_verb_fk")
   @@map("verb")
 }
 
 model AccetanceCriteria {
-  id        String   @id @default(uuid())
-  criteria  String   @unique
+  id        String  @id @default(uuid()) @db.VarChar(100)
+  criteria  String  @unique @db.VarChar(255)
   dimension Int
-  user_id   String
-  user      User     @relation(fields: [user_id], references: [id])
-  VerbACs   VerbAC[]
+  user_id   String  @db.VarChar(100)
+  user      User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  VerbACs   VerbAC?
 
-  @@index([user_id], name: "user_id_ac_fk")
   @@map("acceptance_criteria")
 }
 
 model VerbAC {
-  id             String            @id @default(uuid())
-  verb_id        String
-  verb           Verb              @relation(fields: [verb_id], references: [id])
-  ac_id          String
-  ac             AccetanceCriteria @relation(fields: [ac_id], references: [id])
+  ac_id          String            @unique @db.VarChar(100)
+  verb_id        String            @db.VarChar(100)
+  id             String            @id @default(uuid()) @db.VarChar(100)
+  ac             AccetanceCriteria @relation(fields: [ac_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  verb           Verb              @relation(fields: [verb_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   uxCorrelations UxCorrelation[]
 
-  @@index([verb_id], name: "verb_id_details_fk")
-  @@index([ac_id], name: "ac_id_details_fk")
   @@map("details_verb_ac")
 }
 
 model UxCorrelation {
-  id          String  @id @default(uuid())
-  name        String  @unique
-  description String
-  user_id     String
-  user        User    @relation(fields: [user_id], references: [id])
-  verb_ac_id  String
-  verb_ac     VerbAC  @relation(fields: [verb_ac_id], references: [id])
-  persona_id  String
-  persona     Persona @relation(fields: [persona_id], references: [id])
+  id          String  @id @default(uuid()) @db.VarChar(100)
+  name        String  @db.VarChar(50)
+  description String  @db.VarChar(400)
+  verb_ac_id  String  @db.VarChar(100)
+  user_id     String  @db.VarChar(100)
+  persona_id  String  @db.VarChar(100)
+  persona     Persona @relation(fields: [persona_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user        User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  verb_ac     VerbAC  @relation(fields: [verb_ac_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([persona_id], name: "persona_id_ux_fk")
-  @@index([verb_ac_id], name: "details_id_ux_fk")
-  @@index([user_id], name: "user_id_ux_fk")
   @@map("ux_correlation")
 }

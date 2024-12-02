@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { handleError, missingField } from "@utils/handleError/handleError";
+import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
 
 const createVerb = async (req: Request, res: Response) => {
     if(!req.body.verb){
@@ -16,6 +17,12 @@ const createVerb = async (req: Request, res: Response) => {
 
 const getVerb = async (req: Request, res: Response) => {
   const {id, user} = req.query
+
+  const userId = await verifyJWT(req.headers.cookie??'')
+  if(!userId){
+    res.status(401).json({message: 'É necessaário realizar o login para acessar essa página'})
+  }
+  console.log(userId)
   try{      
       if(id){
           const verb = await prisma.verb.findUnique({where: {
