@@ -9,6 +9,7 @@ import detailsVerbACRoutes from "@routes/verbACRoutes";
 import authRoutes from "@routes/authRoutes";
 import dashboardRoutes from "@routes/dashboardRoutes";
 import cors from 'cors'
+import recoverRoutes from "@routes/recoverRoutes";
 
 dotenv.config();
 const app = express();
@@ -16,10 +17,11 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Substitua pela URL do seu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-  credentials: true, // Permitir cookies, se necessário
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  credentials: true,
 }));
+
 app.use('/users', userRoutes)
 app.use('/verbs', verbRoutes)
 app.use('/acceptance-criteria', accetanceCriteriaRoutes)
@@ -28,6 +30,7 @@ app.use('/verb-ac', detailsVerbACRoutes)
 app.use('/ux-correlation', uxCorrelationRoutes)
 app.use('/auth', authRoutes)
 app.use('/dashboard', dashboardRoutes)
+app.use('/recover', recoverRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
