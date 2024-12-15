@@ -31,6 +31,7 @@ const login = async (req: Request, res: Response) => {
             else res.status(400).json(invalidCredentials)
         }
     }catch(e: any){
+        console.log(e)
         res.status(500).json(handleError(e))
     }
 }

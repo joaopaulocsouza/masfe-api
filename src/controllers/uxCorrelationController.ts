@@ -1,14 +1,18 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { handleError, missingField } from "@utils/handleError/handleError";
+import { Dimension } from "@utils/defines/defines";
+import { generateAC } from "@utils/generateAC/generateAC";
 
 const createUxCorrelation = async (req: Request, res: Response) => {
-    if(!req.body.name || !req.body.description){
-        res.status(400).json(missingField)
-    }
+    // if(!req.body.name || !req.body.description){
+    //     res.status(400).json(missingField)
+    // }
     try{
-        const ux = await prisma.uxCorrelation.create({data: req.body})
-        res.status(201).json(ux)
+        const ac = await generateAC({dimension_number: Dimension["Eficiência"]})
+        // const ux = await prisma.uxCorrelation.create({data: req.body})
+        console.log(ac)
+        res.status(201).json(ac)
     }catch(e: any){
         res.status(500).json(handleError(e))
     }
