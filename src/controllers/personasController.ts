@@ -7,7 +7,7 @@ const createPersona = async (req: Request, res: Response) => {
         res.status(400).json(missingField)
     }
     try{
-        const persona = await prisma.persona.create({data: {...req.body, user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4", age: Number(req.body.age)}})
+        const persona = await prisma.persona.create({data: {...req.body, user_id: "36f065e2-7cd4-4a9f-8b82-2bdfd0553543", age: Number(req.body.age)}})
         res.status(201).json(persona)
     }catch(e: any){
         console.log(e)

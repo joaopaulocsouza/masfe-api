@@ -4,11 +4,12 @@ import { handleError, missingField } from "@utils/handleError/handleError";
 import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
 
 const createVerb = async (req: Request, res: Response) => {
-    if(!req.body.verb){
+    if(!req.body.verb && !req.body.dimension){
         res.status(400).json(missingField)
     }
     try{
-        const verb = await prisma.verb.create({data: {...req.body, user_id: "41c462d3-ef7a-45a4-b6b3-e370ed86c7c4"}})
+        const verb = await prisma.verb.create({data: {...req.body, user_id: "36f065e2-7cd4-4a9f-8b82-2bdfd0553543"}})
+        console.log(verb, req.body)
         res.status(201).json(verb)
     }catch(e: any){
         res.status(500).json(handleError(e))

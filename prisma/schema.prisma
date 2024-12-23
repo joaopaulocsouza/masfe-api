@@ -42,10 +42,8 @@ model Persona {
 model Verb {
   id        String   @id @default(uuid()) @db.VarChar(100)
   verb      String   @unique @db.VarChar(30)
-  garret    Int
   dimension Int
   user_id   String   @db.VarChar(100)
-  VerbACs   VerbAC[]
   user      User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("verb")
