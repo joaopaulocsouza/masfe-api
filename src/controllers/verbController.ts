@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
-import { handleError } from "@utils/handleError/handleError";
 import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
 import { GarretArr, GarretVars } from "@utils/defines/defines";
 import handleResponse from "@utils/handleResponse/handleResponse";
@@ -14,7 +13,12 @@ const createVerb = async (req: Request, res: Response) => {
         return
     }
     try{
-        const result = await prisma.verb.create({data: {verb, dimension, user_id: "832d64d2-034f-46f2-8b5c-93f211be98e3"}})
+        const {cookie} = req.headers
+        const validate = await verifyJWT(cookie??"")
+        if(!validate){
+            handleResponse.handleErrorRes({code: "ERR-02", res})
+        }
+        const result = await prisma.verb.create({data: {verb, dimension, user_id: validate!}})
         GarretArr.forEach(async (e, idx) => {
             if(rest[e]) await prisma.verbGarret.create({data: {verb_id: result.id, garret_id: (idx+1).toString()}})           
         });
@@ -28,12 +32,13 @@ const getVerb = async (req: Request, res: Response) => {
     const {id, user_verbs} = req.query
     let garret = {}
 
-    const userId = '832d64d2-034f-46f2-8b5c-93f211be98e3'
-    // if(!userId){
-    //     res.status(401).json({message: 'É necessaário realizar o login para acessar essa página'})
-    // }
 
     try{ 
+        const {cookie} = req.headers
+        const validate = await verifyJWT(cookie??"")
+        if(!validate){
+            handleResponse.handleErrorRes({code: "ERR-02", res})
+        }
         if(id){
             const result = await prisma.verb.findUnique({
                 where: {id: id.toString()},
@@ -56,8 +61,9 @@ const getVerb = async (req: Request, res: Response) => {
             return
         } 
         if(user_verbs){
+            
             const result = await prisma.verb.findMany({
-                where: {user_id: userId.toString()},
+                where: {user_id: validate??""},
                 select: {
                     verb: true,
                     id: true,
@@ -108,6 +114,11 @@ const getVerb = async (req: Request, res: Response) => {
 const updateVerb = async (req: Request, res: Response) => {
     const {verb, dimension, removeGarret, id, ...rest} = req.body 
     try{
+        const {cookie} = req.headers
+        const validate = await verifyJWT(cookie??"")
+        if(!validate){
+            handleResponse.handleErrorRes({code: "ERR-02", res})
+        }
         if(removeGarret){
             GarretArr.forEach(async (e, idx) => {
                 if(rest[e]) await prisma.verbGarret.delete({
@@ -138,6 +149,11 @@ const updateVerb = async (req: Request, res: Response) => {
 const deleteVerb = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
+        const {cookie} = req.headers
+        const validate = await verifyJWT(cookie??"")
+        if(!validate){
+            handleResponse.handleErrorRes({code: "ERR-02", res})
+        }
         await prisma.verb.delete({where: {id: id?.toString()}});
         handleResponse.handleDeleteRes({code: 'DEL-01', res, item});
     }catch(e: any){

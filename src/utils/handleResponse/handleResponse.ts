@@ -13,7 +13,7 @@ export const handleErrorRes = ({code, res, item}: Props) => {
         case "P2002":
             res.status(400).json({
                 code: "CRT-02",
-                message: resCodes["CRT-02"]
+                message: item+resCodes["CRT-02"]
             })
             return
         case "P2003":
@@ -27,6 +27,12 @@ export const handleErrorRes = ({code, res, item}: Props) => {
             res.status(404).json({
                 code: 'ERR-01',
                 message: item+resCodes["ERR-01"]
+            })
+            return 
+        case 'ERR-02':
+            res.status(401).json({
+                code: 'ERR-02',
+                message: resCodes["ERR-02"]
             })
             return 
         default:
@@ -47,6 +53,7 @@ export const handleCreateRes = ({code, res, item, content}: Props) => {
             })
             return
         case "CRT-02":
+            console.log(item)
             res.status(400).json({
                 code: "CRT-02",
                 message: item+resCodes["CRT-02"]

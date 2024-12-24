@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
-import { unauthorized } from "@utils/handleError/handleError";
 import { Garret } from "@utils/defines/defines";
 import handleResponse from "@utils/handleResponse/handleResponse";
 
 const getDashboard = async (req: Request, res: Response) => {
-    // const validate = await verifyJWT(req.headers.cookie??"")
-    // if(!validate){
-    //     res.status(401).json(unauthorized)
-    // }
     try{        
+        const {cookie} = req.headers
+        const validate = !!cookie?await verifyJWT(cookie):null
+        if(!validate){
+            handleResponse.handleErrorRes({code: "ERR-02", res})
+        }
         const garret = await prisma.verbGarret.groupBy({
             _count: {
                 verb_id: true
             },
-            by: ["garret_id"]
+            by: ["garret_id"],
         })
 
         const count_verbs = await prisma.uxCorrelation.groupBy({
@@ -26,7 +26,7 @@ const getDashboard = async (req: Request, res: Response) => {
                 _count: {
                     verb_id: "desc"
                 }
-            },
+            }
         })
         const resVerbs = await Promise.all(
                      count_verbs.map(async (item) => {
@@ -46,6 +46,9 @@ const getDashboard = async (req: Request, res: Response) => {
                         name: true
                     }
                 }
+            },
+            where: {
+                user_id: validate??""
             }
         })
         

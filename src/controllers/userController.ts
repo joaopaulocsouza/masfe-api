@@ -2,73 +2,84 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
 import { encrypt } from "@utils/hash/hash";
-import { handleError, missingField } from "@utils/handleError/handleError";
 import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
+import handleResponse from "@utils/handleResponse/handleResponse";
+import jwt from 'jsonwebtoken'
+
+const item = "Usuário "
 
 const createUser = async (req: Request, res: Response) => {
   if(!req.body.email || !req.body.password || !req.body.password || !req.body.birthday){
-    res.status(400).json(missingField)
+    handleResponse.handleCreateRes({code: "CRT-02", res, item })
   }
   try{
     const password = await encrypt(req.body.password)
-    const user = await prisma.user.create({data: {...req.body, password}})
-    res.status(201).json(user)
+    const {id} = await prisma.user.create({data: {...req.body, password}})
+    const token = jwt.sign({id}, process.env.SECRET!, {expiresIn: 20000})
+
+    res.cookie('token', token)
+    handleResponse.handleCreateRes({code: "CRT-01", res, item })
   }catch(e: any){
-    console.log(e)
-    res.status(500).json(handleError(e))
+    handleResponse.handleErrorRes({code: e.code, res, item })
   }
 };
 
 const getAllUsers = async (req: Request, res: Response) => {
   const {id} = req.query
-
-
   try{
+    const {cookie} = req.headers
+    const validate = await verifyJWT(cookie??"")
+    if(!validate){
+        handleResponse.handleErrorRes({code: "ERR-02", res})
+    }
     if(id){
       const users = await prisma.user.findUnique({where: {
         id: id.toString(),
       }})
-      if(!users){
-        res.status(404).json({message: "Usuário não encontrado"})
-      }
-      res.status(200).json(users)
+      handleResponse.handleGetRes({code: "GET-01", res, item, content: users })
     } else {
       const users = await prisma.user.findMany()
-      res.status(200).json(users)
+      handleResponse.handleGetRes({code: "GET-01", res, item, content: users })
     }
   }
   catch(e: any){
-    console.log(e)
-    res.status(500).json({})
+    handleResponse.handleErrorRes({code: e.code, res, item })
   }
 };
 
 
 const updateUser = async (req: Request, res: Response) => {
-  console.log(req.body)
+  const {id, ...data} = req.body
+  if(!id){
+    handleResponse.handleErrorRes({code: "ERR-01", res, item })
+  }
   try {
-    const {id, ...data} = req.body
-    const user = await prisma.user.update({data, where: {id: id}})
-    res.status(200).json(user)
+    const {cookie} = req.headers
+    const validate = await verifyJWT(cookie??"")
+    if(!validate){
+        handleResponse.handleErrorRes({code: "ERR-02", res})
+    }
+    await prisma.user.update({data, where: {id: id}})
+    handleResponse.handleCreateRes({code: "UPD-01", res, item })
   }catch(e: any){
-    res.status(500).json(handleError(e))
+    handleResponse.handleErrorRes({code: e.code, res, item })
   }
 };
 
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.query
   if(!id){
-    res.status(404).json({ message: 'User not found' });
+    handleResponse.handleErrorRes({code: "ERR-01", res, item })
   }
   try {
-    const deletedUser = await prisma.user.delete({where: {id: id?.toString()}});
-    if (deletedUser) {
-      res.status(200).json(deletedUser);
-    } else {
-      res.status(404).json({ message: 'User not found' });
+    const {cookie} = req.headers
+    const validate = await verifyJWT(cookie??"")
+    if(!validate){
+        handleResponse.handleErrorRes({code: "ERR-02", res})
     }
+    await prisma.user.delete({where: {id: id?.toString()}})
   } catch(e: any){
-    res.status(500).json(handleError(e))
+    handleResponse.handleErrorRes({code: e.code, res, item })
   }
 }
 
