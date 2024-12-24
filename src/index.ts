@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from  "dotenv"
 import userRoutes from "@routes/userRoutes"
 import verbRoutes from "@routes/verbRoutes";
-import accetanceCriteriaRoutes from "@routes/acceptanceCriteriaRoutes";
 import personaRoutes from "@routes/personaRoutes";
 import uxCorrelationRoutes from "@routes/uxCorrelation";
 import authRoutes from "@routes/authRoutes";
@@ -23,7 +22,6 @@ app.use(cors({
 
 app.use('/users', userRoutes)
 app.use('/verbs', verbRoutes)
-app.use('/acceptance-criteria', accetanceCriteriaRoutes)
 app.use('/personas', personaRoutes)
 app.use('/ux-correlation', uxCorrelationRoutes)
 app.use('/auth', authRoutes)

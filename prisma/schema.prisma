@@ -16,7 +16,6 @@ model User {
   occupation        String?             @db.VarChar(100)
   address           String?             @db.VarChar(255)
   birthday          DateTime            @db.Date
-  accptanceCriteria AccetanceCriteria[]
   personas          Persona[]
   uxCorrelations    UxCorrelation[]
   verbs             Verb[]
@@ -33,54 +32,49 @@ model Persona {
   user_id            String          @db.VarChar(100)
   gender             String?         @db.VarChar(20)
   age                Int?
-  user               User            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user               User            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   uxCorrelations     UxCorrelation[]
 
   @@map("personas")
 }
 
 model Verb {
-  id        String   @id @default(uuid()) @db.VarChar(100)
-  verb      String   @unique @db.VarChar(30)
-  dimension Int
-  user_id   String   @db.VarChar(100)
-  user      User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id         String       @id @default(uuid()) @db.VarChar(100)
+  verb       String       @unique @db.VarChar(30)
+  dimension  Int
+  user_id    String       @db.VarChar(100)
+  user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  verbGarret VerbGarret[]
 
   @@map("verb")
 }
 
-model AccetanceCriteria {
-  id        String  @id @default(uuid()) @db.VarChar(100)
-  criteria  String  @unique @db.VarChar(255)
-  dimension Int
-  user_id   String  @db.VarChar(100)
-  user      User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  VerbACs   VerbAC?
+model Garret {
+  id         String       @id @default(uuid()) @db.VarChar(100)
+  element    String       @unique
+  verbGarret VerbGarret[]
 
-  @@map("acceptance_criteria")
+  @@map("garret")
 }
 
-model VerbAC {
-  ac_id          String            @unique @db.VarChar(100)
-  verb_id        String            @db.VarChar(100)
-  id             String            @id @default(uuid()) @db.VarChar(100)
-  ac             AccetanceCriteria @relation(fields: [ac_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  verb           Verb              @relation(fields: [verb_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  uxCorrelations UxCorrelation[]
+model VerbGarret {
+  verb_id   String @db.VarChar(100)
+  verb      Verb   @relation(fields: [verb_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  garret_id String @db.VarChar(100)
+  garret    Garret @relation(fields: [garret_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@map("details_verb_ac")
+  @@id([verb_id, garret_id])
+  @@map("verb_garret")
 }
 
 model UxCorrelation {
   id          String  @id @default(uuid()) @db.VarChar(100)
   name        String  @db.VarChar(50)
   description String  @db.VarChar(400)
-  verb_ac_id  String  @db.VarChar(100)
   user_id     String  @db.VarChar(100)
   persona_id  String  @db.VarChar(100)
   persona     Persona @relation(fields: [persona_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  user        User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  verb_ac     VerbAC  @relation(fields: [verb_ac_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("ux_correlation")
 }

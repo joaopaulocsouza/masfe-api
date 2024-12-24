@@ -69,3 +69,29 @@ export const DescriptionRelation = {
             informações essenciais e elimine elementos desnecessários.`
     }
 }
+
+export enum GarretVars {
+    'userNeeds' = 0,
+    'functionalSpecifications',
+    'interactionDesign',
+    'interfaceDesign',
+    'informationDesign',
+    'productGoals',
+    'contentRequirements',
+    'informationArchitecture',
+    'navigationDesign',
+    'visualDesign'
+}
+
+export const GarretArr = [
+    'userNeeds',
+    'functionalSpecifications',
+    'interactionDesign',
+    'interfaceDesign',
+    'informationDesign',
+    'productGoals',
+    'contentRequirements',
+    'informationArchitecture',
+    'navigationDesign',
+    'visualDesign'
+]

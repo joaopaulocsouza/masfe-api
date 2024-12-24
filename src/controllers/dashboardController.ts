@@ -19,20 +19,6 @@ const getDashboard = async (req: Request, res: Response) => {
                         name: true,
                         occupation: true
                     }
-                },
-                verb_ac: {
-                    select: {
-                        verb: {
-                            select: {
-                                verb: true
-                            }
-                        },
-                        ac: {
-                            select: {
-                                criteria: true
-                            }
-                        }
-                    }
                 }
             },
             where: {
@@ -40,40 +26,8 @@ const getDashboard = async (req: Request, res: Response) => {
             }
         })
         
-        const verbs = await prisma.verbAC.findMany({
-            select: {
-                id: true,
-                verb: true,
-                verb_id: true,
-                _count: {
-                    select: {
-                        uxCorrelations: {
-
-                        }
-                    }
-                }
-            }
-        })
-
-        const acDimensionCount = await prisma.accetanceCriteria.groupBy({
-            by: "dimension",
-            _count: true,
-        })
-
-        console.log({
-            uxs,
-            verbs,
-            dimensions: {
-                acDimensionCount
-            }
-        })
-    
         res.status(200).json({
             uxs,
-            verbs,
-            dimensions: {
-                acDimensionCount
-            }
         })
     }catch(e){
         return
