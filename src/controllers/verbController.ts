@@ -5,6 +5,8 @@ import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
 import { GarretArr, GarretVars } from "@utils/defines/defines";
 import handleResponse from "@utils/handleResponse/handleResponse";
 
+const item = "Verbo"
+
 const createVerb = async (req: Request, res: Response) => {
     const {verb, dimension, ...rest} = req.body 
     if(!verb || !dimension){
@@ -16,10 +18,9 @@ const createVerb = async (req: Request, res: Response) => {
         GarretArr.forEach(async (e, idx) => {
             if(rest[e]) await prisma.verbGarret.create({data: {verb_id: result.id, garret_id: (idx+1).toString()}})           
         });
-        handleResponse.handleCreateRes({code: "CRT-01", res})
+        handleResponse.handleCreateRes({code: "CRT-01", res, item})
     }catch(e: any){
-        console.log(e)
-        handleResponse.handleErrorRes({code: e.code, res})
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
@@ -27,7 +28,7 @@ const getVerb = async (req: Request, res: Response) => {
     const {id, user_verbs} = req.query
     let garret = {}
 
-    const userId = 'c3b80ba7-b01b-44b2-a36d-24309a324997'
+    const userId = '832d64d2-034f-46f2-8b5c-93f211be98e3'
     // if(!userId){
     //     res.status(401).json({message: 'É necessaário realizar o login para acessar essa página'})
     // }
@@ -51,7 +52,7 @@ const getVerb = async (req: Request, res: Response) => {
                     [GarretVars[Number(e.garret_id)-1]]: true
                 })
             })
-            res.status(200).json({verb: result?.verb, dimension: result?.dimension, ...garret})
+            handleResponse.handleGetRes({code: "GET-01", res, content: {verb: result?.verb, dimension: result?.dimension, ...garret}})
             return
         } 
         if(user_verbs){
@@ -72,7 +73,7 @@ const getVerb = async (req: Request, res: Response) => {
                     }
                 }
             })
-            res.status(200).json(result)
+            handleResponse.handleGetRes({code: "GET-01", res, content: result})
             return
         }  
         
@@ -97,10 +98,9 @@ const getVerb = async (req: Request, res: Response) => {
                 }
             }
         })
-        res.status(200).json(result)
-      
+        handleResponse.handleGetRes({code: "GET-01", res, content: result})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res})
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
@@ -109,7 +109,6 @@ const updateVerb = async (req: Request, res: Response) => {
     const {verb, dimension, removeGarret, id, ...rest} = req.body 
     try{
         if(removeGarret){
-            console.log(rest)
             GarretArr.forEach(async (e, idx) => {
                 if(rest[e]) await prisma.verbGarret.delete({
                     where: 
@@ -120,7 +119,7 @@ const updateVerb = async (req: Request, res: Response) => {
                         }
                     }})           
             });
-            res.status(200).json({code: 'DEL-01'})
+            handleResponse.handleErrorRes({code: 'DEL-01', item, res})
             return
         }
         await prisma.verb.update({
@@ -130,23 +129,20 @@ const updateVerb = async (req: Request, res: Response) => {
         GarretArr.forEach(async (e, idx) => {
             if(rest[e]) await prisma.verbGarret.create({data: {verb_id: id, garret_id: (idx+1).toString()}})           
         });
-        handleResponse.handleUpdateRes({code: "UPD-01", res})
+        handleResponse.handleUpdateRes({code: "UPD-01", res, item})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res})
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
 const deleteVerb = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
-        const deletedVerb = await prisma.verb.delete({where: {id: id?.toString()}});
-        if (deletedVerb) {
-            res.status(200).json(deletedVerb);
-        } else {
-            res.status(404).json({ message: 'User not found' });
-        }
+        await prisma.verb.delete({where: {id: id?.toString()}});
+        handleResponse.handleDeleteRes({code: 'DEL-01', res, item});
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res})
+        console.log(e)
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 }
 

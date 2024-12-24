@@ -1,7 +1,9 @@
 export enum resCodes {
-    "CRT-01" = "Elemento criado com sucesso",
-    "CRT-02" = "Elemento já cadastrado",
+    "CRT-01" = " criado com sucesso",
+    "CRT-02" = " já cadastrado",
     "CRT-03" = "Um ou mais campos obrigatórios não foram preenchidos",
-    "UPD-01" = "Elemento atualizado com sucesso",
-    "DEL-02" =  "Não é possível excluír pois existem elementos vinculados"
+    "UPD-01" = " atualizado com sucesso",
+    "DEL-01" = " excluído com sucesso",
+    "DEL-02" = "Não é possível excluír pois existem elementos vinculados",
+    "ERR-01" = " não encontrado"
 }

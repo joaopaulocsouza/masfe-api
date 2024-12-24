@@ -1,3 +1,4 @@
+import prisma from "../../config/db";
 import { DescriptionRelation, Dimension } from "@utils/defines/defines";
 import OpenAI from "openai";
 
@@ -20,7 +21,17 @@ const getDimension = (dimension: number): "Eficiência"|"Eficácia" => {
 
 const getPrompt = async ({dimension_number}: Props) => {
     const dimension: "Eficiência" | "Eficácia" = getDimension(dimension_number)
-    const verbs = ["otimizar", "melhorar"]
+    const userNeeds = await prisma.verbGarret.findMany({where: {garret_id: '1'}, select: {verb: {select: {verb: true}}}})
+    const functionalSpecifications = await prisma.verbGarret.findMany({where: {garret_id: '2'}, select: {verb: {select: {verb: true}}}})
+    const interactionDesign = await prisma.verbGarret.findMany({where: {garret_id: '1'}, select: {verb: {select: {verb: true}}}})
+    const interfaceDesign = await prisma.verbGarret.findMany({where: {garret_id: '4'}, select: {verb: {select: {verb: true}}}})
+    const informationDesign = await prisma.verbGarret.findMany({where: {garret_id: '5'}, select: {verb: {select: {verb: true}}}})
+    const productGoals = await prisma.verbGarret.findMany({where: {garret_id: '6'}, select: {verb: {select: {verb: true}}}})
+    const contentRequirements = await prisma.verbGarret.findMany({where: {garret_id: '7'}, select: {verb: {select: {verb: true}}}})
+    const informationArchitecture = await prisma.verbGarret.findMany({where: {garret_id: '8'}, select: {verb: {select: {verb: true}}}})
+    const navigationDesign = await prisma.verbGarret.findMany({where: {garret_id: '9'}, select: {verb: {select: {verb: true}}}})
+    const visualDesign = await prisma.verbGarret.findMany({where: {garret_id: '10'}, select: {verb: {select: {verb: true}}}})
+
     let msg = `
         Crie critérios de aceitação para histórias de usuário, integrando a relação entre
         a Eficiência (ISO 9241-11), os elementos de Garrett e as heurísticas de Nielsen.
@@ -44,34 +55,34 @@ const getPrompt = async ({dimension_number}: Props) => {
 
         1. ${dimension} ↔ Necessidades do Usuário ↔ Correspondência entre o sistema e
         o mundo real
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${userNeeds.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Necessidades do Usuário"]}
         2. ${dimension} ↔ Objetivos do Produto ↔ Visibilidade do estado do sistema
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${productGoals.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Objetivos do Produto"]}
         3. ${dimension} ↔ Especificações Funcionais ↔ Flexibilidade e Eficiência de Uso
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${functionalSpecifications.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Especificações Funcionais"]}
         4. ${dimension} ↔ Requisitos de Conteúdo ↔ Prevenção de Erros
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${contentRequirements.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Requisitos de Conteúdo"]}
         5. ${dimension} ↔ Design de Interação ↔ Controle e Liberdade do Usuário
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${interactionDesign.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Interação"]}
         6. ${dimension} ↔ Arquitetura da Informação ↔ Consistência e Padrões
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${informationArchitecture.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Arquitetura da Informação"]}
         7. ${dimension} ↔ Design de Interface ↔ Reconhecimento ao invés de lembrança
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${interfaceDesign.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Interface"]}
         8. ${dimension} ↔ Design de Navegação ↔ Ajudar usuários a reconhecer,
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${navigationDesign.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Navegação"]}
         9. ${dimension} ↔ Design de Informação ↔ Ajuda e Documentação
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${informationDesign.map(item => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Informação"]}
         10. ${dimension} ↔ Design Visual ↔ Estética e Design Minimalista
-            - Verbos: ${verbs.map(item => item)}.
+            - Verbos: ${visualDesign.map(item => item.verb.verb+',')}.
             - Descrição: ${DescriptionRelation[dimension]["Design Visual"]}
 
 
@@ -109,6 +120,7 @@ const getPrompt = async ({dimension_number}: Props) => {
             portanto se um verbo aparecer em todos os relacionamentos, isso deverá gerar
             critérios de aceitação para todos eles.
 
+        Retorne em um formato json, constituido pelos campos {userStory: '', acceptanceCriteria: [{relation: '', criteria: []}]}
     `
 
     return msg
@@ -120,5 +132,7 @@ export const generateAC = async ({dimension_number}: Props) => {
         model: 'gpt-4o-mini',
         messages: [{"role": 'user', "content": prompt}],
     })
+    console.log(res.choices[0].message.content)
     return res.choices[0].message.content
+    return ''
 }

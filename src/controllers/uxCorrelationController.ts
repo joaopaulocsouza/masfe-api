@@ -3,49 +3,124 @@ import prisma from "../config/db";
 import { handleError, missingField } from "@utils/handleError/handleError";
 import { Dimension } from "@utils/defines/defines";
 import { generateAC } from "@utils/generateAC/generateAC";
+import handleResponse from "@utils/handleResponse/handleResponse";
+
+const item = "UX Correlation"
 
 const createUxCorrelation = async (req: Request, res: Response) => {
-    // if(!req.body.name || !req.body.description){
-    //     res.status(400).json(missingField)
-    // }
-    try{
-        const ac = await generateAC({dimension_number: Dimension["Eficiência"]})
-        // const ux = await prisma.uxCorrelation.create({data: req.body})
-        console.log(ac)
-        res.status(201).json(ac)
-    }catch(e: any){
-        res.status(500).json(handleError(e))
+    const {name, description, persona_id, verb_id, dimension} = req.body
+
+    if(!name || !description || !persona_id || !verb_id || !dimension){
+        handleResponse.handleCreateRes({code: "CRT-03", res, item})
     }
+    try{
+        const ux = await prisma.uxCorrelation.create({data: {name, description, persona_id, verb_id, dimension, user_id: '832d64d2-034f-46f2-8b5c-93f211be98e3'}})
+        const ac = await generateAC({dimension_number: dimension})
+        const acparsed = JSON.parse(ac?.replace(/^```json\n/, "").replace(/\n```$/, "")??"")
+
+        acparsed.acceptanceCriteria.forEach(async (relations: any) => {
+            const relation = await prisma.relationUXAC.create({data: {relation: relations.relation, ux_id: ux.id}})
+            relations.criteria.forEach(async (criteria: any) => {
+                await prisma.acceptanceCriteria.create({data: {criteria, relation_id: relation.id}})
+            })
+
+        });
+
+        setTimeout(async ()=>{
+            const result = await prisma.uxCorrelation.findUnique({
+                where:{
+                id: ux.id.toString()
+            },
+            select: {
+                id: true,
+                name: true,
+                persona: {
+                    select: {
+                        name: true
+                    }
+                },
+                user: {
+                    select: {
+                        name: true
+                    }
+                },
+                description: true,
+                relationUXAC: {
+                    select: {
+                        relation: true,
+                        acceptanceCriteria: {
+                            select: {
+                                criteria: true,
+                            }
+                        }
+                    }
+                },
+                dimension: true,
+                verb: true
+            }
+          })
+          handleResponse.handleCreateRes({code: "CRT-01", res, item, content: result})
+        }, 3000)
+        }catch(e: any){
+            handleResponse.handleErrorRes({code: e.code, res, item})
+        }
 };
 
 const getUxCorrelation  = async (req: Request, res: Response) => {
   const {id, user_id} = req.query
+
   try{      
       if(id){
-          const ux = await prisma.uxCorrelation.findUnique({where: {
-              id: id.toString(),
-            }})
-            if(!ux){
-                res.status(404).json({message: 'UX Correlation não encontrada'})
+        const result = await prisma.uxCorrelation.findUnique({
+            where:{
+                id: id.toString()
+            },
+            select: {
+                id: true,
+                name: true,
+                persona: {
+                    select: {
+                        name: true
+                    }
+                },
+                user: {
+                    select: {
+                        name: true
+                    }
+                },
+                description: true,
+                relationUXAC: {
+                    select: {
+                        relation: true,
+                        acceptanceCriteria: {
+                            select: {
+                                criteria: true,
+                            }
+                        }
+                    }
+                },
+                dimension: true,
+                verb: true
             }
-            res.status(200).json(ux)
-        } else if(user_id){
-            const ux = await prisma.uxCorrelation.findMany({
-                where: {
-                    user_id: user_id.toString()
+          })
+          handleResponse.handleGetRes({code: "GET-01", res, content: result})
+            return
+      }
+      const result = await prisma.uxCorrelation.findMany({
+        select: {
+            id: true,
+            name: true,
+            persona: true,
+            user: {
+                select: {
+                    name: true
                 }
-            })
-            if(!ux){
-                res.status(404).json({message: 'Nenhuma UX Correlation foi encontrada'})
             }
-            res.status(200).json(ux)
-        }else {
-            const ux = await prisma.uxCorrelation.findMany()
-            res.status(200).json(ux)
         }
+      })
+      handleResponse.handleGetRes({code: "GET-01", res, content: result})
     }catch(e: any){
-        console.log(e)
-        res.status(500).json(handleError(e))
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
@@ -53,32 +128,57 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
 const updateUxCorrelation  = async (req: Request, res: Response) => {
   try {
     const {id, ...data} = req.body
-    const ux = await prisma.uxCorrelation.update({data, where: {id: id}})
-    res.status(200).json(ux)
-  } catch(e: any){88
-    res.status(500).json(handleError(e))
+    await prisma.uxCorrelation.update({data, where: {id: id}})
+    setTimeout(async ()=>{
+        const result = await prisma.uxCorrelation.findUnique({
+            where:{
+            id: id.toString()
+        },
+        select: {
+            id: true,
+            name: true,
+            persona: {
+                select: {
+                    name: true
+                }
+            },
+            user: {
+                select: {
+                    name: true
+                }
+            },
+            description: true,
+            relationUXAC: {
+                select: {
+                    relation: true,
+                    acceptanceCriteria: {
+                        select: {
+                            criteria: true,
+                        }
+                    }
+                }
+            },
+            dimension: true,
+            verb: true
+        }
+      })
+      handleResponse.handleCreateRes({code: "UPD-01", res, item, content: result})
+    }, 500)
+  } catch(e: any){
+    handleResponse.handleErrorRes({code: e.code, res, item})
   }
 };
 
 const deleteUxCorrelation  = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
-
-      if(!id){
-          res.status(404).json({ message: 'UX Correlation não encontrada' });
+        if(!id){
+          handleResponse.handleErrorRes({code: "ERR-01", res, item})
         }
-        try {
-            const ux = await prisma.uxCorrelation.delete({where: {id: id?.toString()}});
-            if (ux) {
-                res.status(200).json(ux);
-            } else {
-                res.status(404).json({ message: 'UX correlation não encontrada' });
-            }
-        } catch (err: any) {
-            res.status(500).json({ error: err.message });
-        }
+        await prisma.uxCorrelation.delete({where: {id: id?.toString()}});
+        handleResponse.handleDeleteRes({code: "DEL-01", res, item})
     }catch(e: any){
-        res.status(500).json(handleError(e))
+        handleResponse.handleErrorRes({code: e.code, res, item})
     }
 }
 
