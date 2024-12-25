@@ -29,12 +29,12 @@ const getDashboard = async (req: Request, res: Response) => {
             }
         })
         const resVerbs = await Promise.all(
-                     count_verbs.map(async (item) => {
+                     count_verbs.map(async (item: any) => {
                         const verb = await prisma.verb.findUnique({where: {id: item.verb_id}})
                         return {name: verb?.verb??"", value: item._count}
                     })
                 )
-        const resGarret = garret.map(item => ({name: Garret[Number(item.garret_id)], value: item._count.verb_id}))
+        const resGarret = garret.map((item: any) => ({name: Garret[Number(item.garret_id)], value: item._count.verb_id}))
         const uxCorrelations = await prisma.uxCorrelation.findMany({
             take: 20,
             select: {

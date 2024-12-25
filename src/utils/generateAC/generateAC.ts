@@ -55,34 +55,34 @@ const getPrompt = async ({dimension_number}: Props) => {
 
         1. ${dimension} ↔ Necessidades do Usuário ↔ Correspondência entre o sistema e
         o mundo real
-            - Verbos: ${userNeeds.map(item => item.verb.verb)}.
+            - Verbos: ${userNeeds.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Necessidades do Usuário"]}
         2. ${dimension} ↔ Objetivos do Produto ↔ Visibilidade do estado do sistema
-            - Verbos: ${productGoals.map(item => item.verb.verb)}.
+            - Verbos: ${productGoals.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Objetivos do Produto"]}
         3. ${dimension} ↔ Especificações Funcionais ↔ Flexibilidade e Eficiência de Uso
-            - Verbos: ${functionalSpecifications.map(item => item.verb.verb)}.
+            - Verbos: ${functionalSpecifications.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Especificações Funcionais"]}
         4. ${dimension} ↔ Requisitos de Conteúdo ↔ Prevenção de Erros
-            - Verbos: ${contentRequirements.map(item => item.verb.verb)}.
+            - Verbos: ${contentRequirements.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Requisitos de Conteúdo"]}
         5. ${dimension} ↔ Design de Interação ↔ Controle e Liberdade do Usuário
-            - Verbos: ${interactionDesign.map(item => item.verb.verb)}.
+            - Verbos: ${interactionDesign.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Interação"]}
         6. ${dimension} ↔ Arquitetura da Informação ↔ Consistência e Padrões
-            - Verbos: ${informationArchitecture.map(item => item.verb.verb)}.
+            - Verbos: ${informationArchitecture.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Arquitetura da Informação"]}
         7. ${dimension} ↔ Design de Interface ↔ Reconhecimento ao invés de lembrança
-            - Verbos: ${interfaceDesign.map(item => item.verb.verb)}.
+            - Verbos: ${interfaceDesign.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Interface"]}
         8. ${dimension} ↔ Design de Navegação ↔ Ajudar usuários a reconhecer,
-            - Verbos: ${navigationDesign.map(item => item.verb.verb)}.
+            - Verbos: ${navigationDesign.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Navegação"]}
         9. ${dimension} ↔ Design de Informação ↔ Ajuda e Documentação
-            - Verbos: ${informationDesign.map(item => item.verb.verb)}.
+            - Verbos: ${informationDesign.map((item: any) => item.verb.verb)}.
             - Descrição: ${DescriptionRelation[dimension]["Design de Informação"]}
         10. ${dimension} ↔ Design Visual ↔ Estética e Design Minimalista
-            - Verbos: ${visualDesign.map(item => item.verb.verb+',')}.
+            - Verbos: ${visualDesign.map((item: any) => item.verb.verb+',')}.
             - Descrição: ${DescriptionRelation[dimension]["Design Visual"]}
 
 

@@ -52,7 +52,7 @@ const getVerb = async (req: Request, res: Response) => {
                     dimension: true
                 }
             })
-            result?.verbGarret.forEach(e => {
+            result?.verbGarret.forEach((e: any) => {
                 Object.assign(garret, {
                     [GarretVars[Number(e.garret_id)-1]]: true
                 })
