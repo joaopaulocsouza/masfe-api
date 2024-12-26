@@ -6,10 +6,11 @@ import handleResponse from "../utils/handleResponse/handleResponse";
 
 const getDashboard = async (req: Request, res: Response) => {
     try{        
-        const {cookie} = req.headers
-        const validate = !!cookie?await verifyJWT(cookie):null
+        const {token} = req.cookies
+        const validate = await verifyJWT(token)
+        console.log(validate)
         if(!validate){
-            handleResponse.handleErrorRes({code: "ERR-02", res})
+           return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         const garret = await prisma.verbGarret.groupBy({
             _count: {
@@ -52,10 +53,10 @@ const getDashboard = async (req: Request, res: Response) => {
             }
         })
         
-        handleResponse.handleGetRes({code: 'GET-01', res, content: {garret: resGarret, verbs: resVerbs, uxCorrelations}})
+        return handleResponse.handleGetRes({code: 'GET-01', res, content: {garret: resGarret, verbs: resVerbs, uxCorrelations}})
     }catch(e: any){
-        console.log(e)
-        handleResponse.handleErrorRes({code: e.code, res})
+        // console.log("aqui",e)
+        return handleResponse.handleErrorRes({code: e.code, res})
     }
 
   };

@@ -103,8 +103,46 @@ export const handleGetRes = ({code, res, item, content}: Props) => {
     }
 }
 
-export const handleLoginRes = ({code, res}: Props) => {
+export const handleRegisterRes = ({code, res, content}: Props) => {
+    switch(code){
+        case "RGS-01": 
+            res.cookie("token", content.token, content.options).json({
+                code: "RGS-01",
+                message: resCodes["RGS-01"]
+            })
+            console.log(res)
+            return
+        }
+}
 
+export const handleLoginRes = ({code, res, content}: Props) => {
+ switch(code){
+        case "LGN-01": 
+            res.cookie("token", content.token, content.options).json({
+                code: "LGN-01",
+                message: resCodes["LGN-01"]
+            })
+            console.log(res)
+            return
+        case "LGN-02": 
+            res.status(401).json({
+                code: "LGN-02",
+                message: resCodes["LGN-02"]
+            })
+            return
+        case "LGN-03": 
+            res.status(400).json({
+                code: "LGN-03",
+                message: resCodes["LGN-03"]
+            })
+            return
+        case "LGT-01": 
+            res.status(200).json({
+                code: "LGT-01",
+                message: resCodes["LGT-01"]
+            })
+            return
+    }
 }
 
 export default {handleCreateRes, handleDeleteRes, handleErrorRes, handleLoginRes, handleUpdateRes, handleGetRes}

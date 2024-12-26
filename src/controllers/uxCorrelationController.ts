@@ -10,13 +10,13 @@ const createUxCorrelation = async (req: Request, res: Response) => {
     const {name, description, persona_id, verb_id, dimension} = req.body
 
     if(!name || !description || !persona_id || !verb_id || !dimension){
-        handleResponse.handleCreateRes({code: "CRT-03", res, item})
+        return handleResponse.handleCreateRes({code: "CRT-03", res, item})
     }
     try{
-        const {cookie} = req.headers
-        const validate = await verifyJWT(cookie??"")
+        const {token} = req.cookies
+        const validate = await verifyJWT(token)
         if(!validate){
-            handleResponse.handleErrorRes({code: "ERR-02", res})
+            return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         const ux = await prisma.uxCorrelation.create({data: {name, description, persona_id, verb_id, dimension, user_id: validate??""}})
         const ac = await generateAC({dimension_number: dimension})
@@ -63,10 +63,10 @@ const createUxCorrelation = async (req: Request, res: Response) => {
                 verb: true
             }
           })
-          handleResponse.handleCreateRes({code: "CRT-01", res, item, content: result})
+          return handleResponse.handleCreateRes({code: "CRT-01", res, item, content: result})
         }, 3000)
         }catch(e: any){
-            handleResponse.handleErrorRes({code: e.code, res, item})
+            return handleResponse.handleErrorRes({code: e.code, res, item})
         }
 };
 
@@ -74,10 +74,10 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
   const {id, user_id} = req.query
 
   try{      
-    const {cookie} = req.headers
-    const validate = await verifyJWT(cookie??"")
+    const {token} = req.cookies
+    const validate = await verifyJWT(token)
     if(!validate){
-        handleResponse.handleErrorRes({code: "ERR-02", res})
+        return handleResponse.handleErrorRes({code: "ERR-02", res})
     }
       if(id){
         const result = await prisma.uxCorrelation.findUnique({
@@ -112,8 +112,7 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
                 verb: true
             }
           })
-          handleResponse.handleGetRes({code: "GET-01", res, content: result})
-            return
+          return handleResponse.handleGetRes({code: "GET-01", res, content: result})
       }
       if(user_id){
         const result = await prisma.uxCorrelation.findMany({
@@ -131,8 +130,7 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
                 user_id: validate!
             }
         })
-        handleResponse.handleGetRes({code: "GET-01", res, content: result})
-        return
+        return handleResponse.handleGetRes({code: "GET-01", res, content: result})
       }
       const result = await prisma.uxCorrelation.findMany({
         select: {
@@ -146,19 +144,19 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
             }
         }
       })
-      handleResponse.handleGetRes({code: "GET-01", res, content: result})
+      return handleResponse.handleGetRes({code: "GET-01", res, content: result})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res, item})
+        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
 
 const updateUxCorrelation  = async (req: Request, res: Response) => {
   try {
-    const {cookie} = req.headers
-    const validate = await verifyJWT(cookie??"")
+    const {token} = req.cookies
+    const validate = await verifyJWT(token)
     if(!validate){
-        handleResponse.handleErrorRes({code: "ERR-02", res})
+        return handleResponse.handleErrorRes({code: "ERR-02", res})
     }
     const {id, ...data} = req.body
     await prisma.uxCorrelation.update({data, where: {id: id}})
@@ -195,28 +193,28 @@ const updateUxCorrelation  = async (req: Request, res: Response) => {
             verb: true
         }
       })
-      handleResponse.handleCreateRes({code: "UPD-01", res, item, content: result})
+      return handleResponse.handleCreateRes({code: "UPD-01", res, item, content: result})
     }, 500)
   } catch(e: any){
-    handleResponse.handleErrorRes({code: e.code, res, item})
+    return handleResponse.handleErrorRes({code: e.code, res, item})
   }
 };
 
 const deleteUxCorrelation  = async (req: Request, res: Response) => {
     const { id } = req.query
     try{  
-        const {cookie} = req.headers
-        const validate = await verifyJWT(cookie??"")
+        const {token} = req.cookies
+        const validate = await verifyJWT(token)
         if(!validate){
-            handleResponse.handleErrorRes({code: "ERR-02", res})
+            return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         if(!id){
-          handleResponse.handleErrorRes({code: "ERR-01", res, item})
+            return handleResponse.handleErrorRes({code: "ERR-01", res, item})
         }
         await prisma.uxCorrelation.delete({where: {id: id?.toString()}});
-        handleResponse.handleDeleteRes({code: "DEL-01", res, item})
+        return handleResponse.handleDeleteRes({code: "DEL-01", res, item})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res, item})
+        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 }
 

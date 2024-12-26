@@ -6,5 +6,10 @@ export enum resCodes {
     "DEL-01" = " excluído com sucesso",
     "DEL-02" = "Não é possível excluír pois existem elementos vinculados",
     "ERR-01" = " não encontrado",
-    "ERR-02" = "Sua sessão expirou, realize o login novamente"
+    "ERR-02" = "Sua sessão expirou, realize o login novamente",
+    "LGN-01" = "Login realizado com sucesso",
+    "LGN-02" = "Email e/ou Senha incorretos",
+    "LGN-03" = "Um ou mais campos obrigatórios não foram preenchidos",
+    "LGT-01"= "Logout realizado com sucesso",
+    "RGS-01" = "Usuário cadastrado com sucesso"
 }

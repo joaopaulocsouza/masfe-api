@@ -8,78 +8,78 @@ const item = "Persona"
 const createPersona = async (req: Request, res: Response) => {
     
     if(!req.body.name){
-        handleResponse.handleCreateRes({code: "CRT-03", res, item})
+        return handleResponse.handleCreateRes({code: "CRT-03", res, item})
     }
     try{
-        const {cookie} = req.headers
-        const validate = await verifyJWT(cookie??"")
+        const {token} = req.cookies
+        const validate = await verifyJWT(token)
         if(!validate){
             handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         await prisma.persona.create({data: {...req.body, user_id: validate, age: Number(req.body.age)}})
-        handleResponse.handleCreateRes({code: "CRT-01", res, item})
+        return handleResponse.handleCreateRes({code: "CRT-01", res, item})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res, item})
+        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
 const getPersona = async (req: Request, res: Response) => {
   const {id, user_id} = req.query
   try{      
+      const {token} = req.cookies
+      const validate = await verifyJWT(token)
+      if(!validate){
+          return handleResponse.handleErrorRes({code: "ERR-02", res})
+      }
       if(id){
           const persona = await prisma.persona.findUnique({where: {
               id: id.toString(),
             }})
-            handleResponse.handleGetRes({code: "GET-01", res, content: persona})
+            return handleResponse.handleGetRes({code: "GET-01", res, content: persona})
         } else if(user_id){
-            const {cookie} = req.headers
-            const validate = await verifyJWT(cookie??"")
-            if(!validate){
-                handleResponse.handleErrorRes({code: "ERR-02", res})
-            }
             const persona = await prisma.persona.findMany({
                 where: {
                     user_id: validate??""
                 }
             })
-            handleResponse.handleGetRes({code: "GET-01", res, content: persona})
+            return handleResponse.handleGetRes({code: "GET-01", res, content: persona})
         }else {
             const persona = await prisma.persona.findMany()
-            handleResponse.handleGetRes({code: "GET-01", res, content: persona})
+            return handleResponse.handleGetRes({code: "GET-01", res, content: persona})
         }
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res, item})
+        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };
 
 
 const updatePersona = async (req: Request, res: Response) => {
   try {
-    const {cookie} = req.headers
-    const validate = await verifyJWT(cookie??"")
+    const {token} = req.cookies
+    const validate = await verifyJWT(token)
     if(!validate){
-        handleResponse.handleErrorRes({code: "ERR-02", res})
+        return handleResponse.handleErrorRes({code: "ERR-02", res})
     }
     const {id, ...data} = req.body
     await prisma.persona.update({data, where: {id: id}})
-    handleResponse.handleCreateRes({code: "UPD-01", res})
+    return handleResponse.handleCreateRes({code: "UPD-01", res})
   } catch(e: any){
-    handleResponse.handleErrorRes({code: e.code, res, item})
+    return handleResponse.handleErrorRes({code: e.code, res, item})
   }
 };
 
 const deletePersona = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
-        const {cookie} = req.headers
-        const validate = await verifyJWT(cookie??"")
+        const {token} = req.cookies
+        const validate = await verifyJWT(token)
         if(!validate){
-            handleResponse.handleErrorRes({code: "ERR-02", res})
+            return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         await prisma.persona.delete({where: {id: id?.toString()}});
-        handleResponse.handleErrorRes({code: "DEL-01", res, item})
+        return handleResponse.handleErrorRes({code: "DEL-01", res, item})
     }catch(e: any){
-        handleResponse.handleErrorRes({code: e.code, res, item})
+        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 }
 
