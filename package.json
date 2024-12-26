@@ -8,6 +8,7 @@
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "@prisma/extension-accelerate": "^1.2.1",
+    "base-64": "^1.0.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -25,8 +26,8 @@
     "tsconfig-paths": "^4.2.0"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "prisma generate  && tsc",
+    "start": "ts-node -r tsconfig-paths/register dist/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts"
   },
   "devDependencies": {
