@@ -15,7 +15,7 @@ export enum Garret {
     "Design de Navegação",
     "Design Visual"
 }
-
+export const ExpiresTime = 259200000
 
 export const DescriptionRelation = {
     "Eficiência": {

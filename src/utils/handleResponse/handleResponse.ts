@@ -92,7 +92,7 @@ export const handleDeleteRes = ({code, res, item}: Props) => {
 }
 
 
-export const handleGetRes = ({code, res, item, content}: Props) => {
+export const handleGetRes = ({code, res, content}: Props) => {
     switch(code){
         case "GET-01": 
             res.status(200).json({

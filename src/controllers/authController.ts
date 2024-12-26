@@ -4,6 +4,7 @@ import { compare } from "../utils/hash/hash";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import handleResponse from "@utils/handleResponse/handleResponse";
+import { ExpiresTime } from "@utils/defines/defines";
 dotenv.config()
 
 
@@ -25,8 +26,8 @@ const login = async (req: Request, res: Response) => {
         if(user){
             const verifyCredentials = await compare(req.body.password, user?.password)
             if(verifyCredentials){
-                const token = jwt.sign({id: user.id}, process.env.SECRET!, {expiresIn: 20000})
-                return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: 20000, httpOnly: true} }})
+                const token = jwt.sign({id: user.id}, process.env.SECRET!, {expiresIn: ExpiresTime})
+                return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
             }
             else return handleResponse.handleLoginRes({code: "LGN-02", res} )
         }

@@ -5,6 +5,7 @@ import { encrypt } from "../utils/hash/hash";
 import { verifyJWT } from "../utils/verifyJWT/verifyJWT";
 import handleResponse from "../utils/handleResponse/handleResponse";
 import jwt from 'jsonwebtoken'
+import { ExpiresTime } from "@utils/defines/defines";
 
 const item = "Usuário "
 
@@ -15,9 +16,9 @@ const createUser = async (req: Request, res: Response) => {
   try{
     const password = await encrypt(req.body.password)
     const {id} = await prisma.user.create({data: {...req.body, password}})
-    const token = jwt.sign({id}, process.env.SECRET!, {expiresIn: 20000})
+    const token = jwt.sign({id}, process.env.SECRET!, {expiresIn: ExpiresTime})
 
-    return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: 20000, httpOnly: true} }})
+    return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
   }catch(e: any){
     return handleResponse.handleErrorRes({code: e.code, res, item })
   }
