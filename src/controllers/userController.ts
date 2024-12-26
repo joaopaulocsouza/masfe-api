@@ -1,9 +1,9 @@
 // import User from "@models/user"
 import { Request, Response } from "express";
 import prisma from "../config/db";
-import { encrypt } from "@utils/hash/hash";
-import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
-import handleResponse from "@utils/handleResponse/handleResponse";
+import { encrypt } from "../utils/hash/hash";
+import { verifyJWT } from "../utils/verifyJWT/verifyJWT";
+import handleResponse from "../utils/handleResponse/handleResponse";
 import jwt from 'jsonwebtoken'
 
 const item = "Usuário "

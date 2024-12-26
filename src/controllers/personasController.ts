@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
-import handleResponse from "@utils/handleResponse/handleResponse";
-import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
+import handleResponse from "../utils/handleResponse/handleResponse";
+import { verifyJWT } from "../utils/verifyJWT/verifyJWT";
 
 const item = "Persona"
 

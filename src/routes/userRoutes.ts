@@ -1,6 +1,6 @@
 import express from "express"
 const userRoutes = express.Router()
-import userController from "@controllers/userController"
+import userController from "../controllers/userController"
 
 userRoutes.post('/', userController.createUser)
 userRoutes.get('/', userController.getAllUsers)

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
-import { verifyJWT } from "@utils/verifyJWT/verifyJWT";
-import { GarretArr, GarretVars } from "@utils/defines/defines";
-import handleResponse from "@utils/handleResponse/handleResponse";
+import { verifyJWT } from "../utils/verifyJWT/verifyJWT";
+import { GarretArr, GarretVars } from "../utils/defines/defines";
+import handleResponse from "../utils/handleResponse/handleResponse";
 
 const item = "Verbo"
 

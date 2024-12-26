@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { missingField } from "@utils/handleError/handleError";
-import { sendEmail } from "@utils/mailer/mailer";
+import { missingField } from "../utils/handleError/handleError";
+import { sendEmail } from "../utils/mailer/mailer";
 require('dotenv').config()
 
 const sendCodeRecoverAcc = async (req: Request, res: Response) => {

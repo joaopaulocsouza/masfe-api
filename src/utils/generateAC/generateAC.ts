@@ -1,5 +1,5 @@
 import prisma from "../../config/db";
-import { DescriptionRelation, Dimension } from "@utils/defines/defines";
+import { DescriptionRelation, Dimension } from "../defines/defines";
 import OpenAI from "openai";
 
 interface Props {

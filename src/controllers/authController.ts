@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/db";
-import { handleError, invalidCredentials, missingField } from "@utils/handleError/handleError";
-import { compare } from "@utils/hash/hash";
+import { handleError, invalidCredentials, missingField } from "../utils/handleError/handleError";
+import { compare } from "../utils/hash/hash";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()

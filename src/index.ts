@@ -1,13 +1,13 @@
 import express from "express";
 import dotenv from  "dotenv"
-import userRoutes from "@routes/userRoutes"
-import verbRoutes from "@routes/verbRoutes";
-import personaRoutes from "@routes/personaRoutes";
-import uxCorrelationRoutes from "@routes/uxCorrelation";
-import authRoutes from "@routes/authRoutes";
-import dashboardRoutes from "@routes/dashboardRoutes";
+import userRoutes from "./routes/userRoutes"
+import verbRoutes from "./routes/verbRoutes";
+import personaRoutes from "./routes/personaRoutes";
+import uxCorrelationRoutes from "./routes/uxCorrelation";
+import authRoutes from "./routes/authRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
 import cors from 'cors'
-import recoverRoutes from "@routes/recoverRoutes";
+import recoverRoutes from "./routes/recoverRoutes";
 
 dotenv.config();
 const app = express();
