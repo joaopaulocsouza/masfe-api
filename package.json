@@ -25,9 +25,12 @@
     "swagger-jsdoc": "^6.2.8",
     "tsconfig-paths": "^4.2.0"
   },
+  "engines": {
+    "node": "18"
+  },
   "scripts": {
-    "build": "prisma generate  && tsc",
-    "start": "ts-node -r tsconfig-paths/register dist/index.js",
+    "build": "prisma generate && tsup src",
+    "start": "node dist/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts"
   },
   "devDependencies": {
@@ -44,6 +47,7 @@
     "nodemon": "^3.1.7",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
     "typescript": "^5.6.3"
   }
 }
