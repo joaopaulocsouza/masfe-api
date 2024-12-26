@@ -17,7 +17,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: ['https://mas-fe.vercel.app', 'https://masfe.onrender.com'], 
+  origin: ['https://masfe.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true,
 }));
