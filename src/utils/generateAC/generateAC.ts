@@ -4,11 +4,10 @@ import OpenAI from "openai";
 
 interface Props {
     dimension_number: number
+    verb: string
+    persona: string
+    description: string
 }
-
-const persona = "João"
-const verb = "Otimizar"
-const expected_result = ""
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY
@@ -19,7 +18,7 @@ const getDimension = (dimension: number): "Eficiência"|"Eficácia" => {
     return "Eficiência"
 }
 
-const getPrompt = async ({dimension_number}: Props) => {
+const getPrompt = async ({dimension_number, description, persona, verb}: Props) => {
     const dimension: "Eficiência" | "Eficácia" = getDimension(dimension_number)
     const userNeeds = await prisma.verbGarret.findMany({where: {garret_id: '1'}, select: {verb: {select: {verb: true}}}})
     const functionalSpecifications = await prisma.verbGarret.findMany({where: {garret_id: '2'}, select: {verb: {select: {verb: true}}}})
@@ -40,7 +39,9 @@ const getPrompt = async ({dimension_number}: Props) => {
         
         1. História do Usuário
         Formate a história no padrão:
-        \"Eu ${persona}, quero que o sistema ${verb} ${expected_result}\"
+        \"Eu [persona], quero que o sistema [ação/objetivo] [resultado esperado]\".
+        da seguinte história: 
+        \"Eu ${persona}, quero que o sistema ${verb} ${description}\"
         2. Verbo no Infinitivo
         Identifique o verbo principal no infinitivo que expressa a ação ou o objetivo na história
         do usuário. Esse verbo será utilizado para definir a relação apropriada entre ISO 9241-
@@ -122,17 +123,23 @@ const getPrompt = async ({dimension_number}: Props) => {
 
         Retorne em um formato json, constituido pelos campos {userStory: '', acceptanceCriteria: [{relation: '', criteria: []}]}
     `
+    console.log(msg)
 
     return msg
 }
 
-export const generateAC = async ({dimension_number}: Props) => {
-    const prompt = await getPrompt({dimension_number})
+export const generateAC = async ({dimension_number, description, persona: persona_id, verb: verb_id}: Props) => {
+    const verb = await prisma.verb.findUnique({where: {id: verb_id}})
+    const persona = await prisma.persona.findUnique({where: {id: persona_id}})
+    const prompt = await getPrompt({
+        dimension_number, 
+        description, 
+        persona:persona?.name??"",
+        verb: verb?.verb??""
+    })
     const res = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{"role": 'user', "content": prompt}],
     })
-    console.log(res.choices[0].message.content)
     return res.choices[0].message.content
-    return ''
 }

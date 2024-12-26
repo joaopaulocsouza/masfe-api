@@ -10,7 +10,6 @@ const createVerb = async (req: Request, res: Response) => {
     const {verb, dimension, ...rest} = req.body 
     if(!verb || !dimension){
        return handleResponse.handleCreateRes({code: "CRT-03", res})
-        return
     }
     try{
         const {token} = req.cookies
@@ -19,10 +18,31 @@ const createVerb = async (req: Request, res: Response) => {
            return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         const result = await prisma.verb.create({data: {verb, dimension, user_id: validate!}})
-        GarretArr.forEach(async (e, idx) => {
-            if(rest[e]) await prisma.verbGarret.create({data: {verb_id: result.id, garret_id: (idx+1).toString()}})           
-        });
-       return handleResponse.handleCreateRes({code: "CRT-01", res, item})
+        setTimeout(async () => {
+            GarretArr.forEach(async (e, idx) => {
+                if(rest[e])  console.log({verb_id: result.id, garret_id: (idx+1).toString()})
+                if(rest[e]) await prisma.verbGarret.create({data: {verb_id: result.id, garret_id: (idx+1).toString()}})           
+                });
+        }, 2000)
+        setTimeout(async () => {
+            let garret: any = {}
+            const r = await prisma.verb.findUnique({
+                where: {id: result.id.toString()},
+                select: {
+                    verbGarret: {
+                        select: {
+                            garret_id: true
+                        }
+                    }
+                }
+            })
+            r?.verbGarret.forEach((e: any) => {
+                Object.assign(garret, {
+                    [GarretVars[Number(e.garret_id)-1]]: true
+                })
+            })
+            return handleResponse.handleCreateRes({code: "CRT-01", res, item, content: {...result, ...garret}})
+        }, 2000)
     }catch(e: any){
        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
@@ -31,8 +51,6 @@ const createVerb = async (req: Request, res: Response) => {
 const getVerb = async (req: Request, res: Response) => {
     const {id, user_verbs} = req.query
     let garret = {}
-
-
     try{ 
         const {token} = req.cookies
         const validate = await verifyJWT(token)
@@ -49,6 +67,7 @@ const getVerb = async (req: Request, res: Response) => {
                             garret_id: true
                         }
                     },
+                    id: true,
                     dimension: true
                 }
             })
@@ -57,7 +76,7 @@ const getVerb = async (req: Request, res: Response) => {
                     [GarretVars[Number(e.garret_id)-1]]: true
                 })
             })
-           return handleResponse.handleGetRes({code: "GET-01", res, content: {verb: result?.verb, dimension: result?.dimension, ...garret}})
+           return handleResponse.handleGetRes({code: "GET-01", res, content: {...result, ...garret}})
         } 
         if(user_verbs){
             
@@ -119,26 +138,49 @@ const updateVerb = async (req: Request, res: Response) => {
         }
         if(removeGarret){
             GarretArr.forEach(async (e, idx) => {
-                if(rest[e]) await prisma.verbGarret.delete({
+                if(rest[e]){
+                await prisma.verbGarret.delete({
                     where: 
                     { verb_id_garret_id: 
                         {
                             garret_id: (idx+1).toString(), 
                             verb_id: id.toString()
                         }
-                    }})           
+                    }})      
+                }     
             });
-           return handleResponse.handleErrorRes({code: 'DEL-01', item, res})
+        }else{
+            await prisma.verb.update({
+                where: {id: id.toString()},
+                data: {verb, dimension}
+            })
+            GarretArr.forEach(async (e, idx) => {
+                if(rest[e]) await prisma.verbGarret.create({data: {verb_id: id, garret_id: (idx+1).toString()}})           
+            });
         }
-        await prisma.verb.update({
-            where: {id: id.toString()},
-            data: {verb, dimension}
-        })
-        GarretArr.forEach(async (e, idx) => {
-            if(rest[e]) await prisma.verbGarret.create({data: {verb_id: id, garret_id: (idx+1).toString()}})           
-        });
-       return handleResponse.handleUpdateRes({code: "UPD-01", res, item})
+        setTimeout(async () => {
+            let garret: any = {}
+            const result = await prisma.verb.findUnique({
+                where: {id: id.toString()},
+                select: {
+                    verb: true,
+                    verbGarret: {
+                        select: {
+                            garret_id: true
+                        }
+                    },
+                    dimension: true
+                }
+            })
+            result?.verbGarret.forEach((e: any) => {
+                Object.assign(garret, {
+                    [GarretVars[Number(e.garret_id)-1]]: true
+                })
+            })
+            return handleResponse.handleUpdateRes({code: "UPD-01", res, item, content: {...result, ...garret}})
+        }, 2000)
     }catch(e: any){
+        console.log(e)
        return handleResponse.handleErrorRes({code: e.code, res, item})
     }
 };

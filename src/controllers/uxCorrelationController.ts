@@ -19,7 +19,7 @@ const createUxCorrelation = async (req: Request, res: Response) => {
             return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         const ux = await prisma.uxCorrelation.create({data: {name, description, persona_id, verb_id, dimension, user_id: validate??""}})
-        const ac = await generateAC({dimension_number: dimension})
+        const ac = await generateAC({dimension_number: dimension, description, persona: persona_id, verb: verb_id})
         const acparsed = JSON.parse(ac?.replace(/^```json\n/, "").replace(/\n```$/, "")??"")
 
         acparsed.acceptanceCriteria.forEach(async (relations: any) => {
@@ -27,7 +27,6 @@ const createUxCorrelation = async (req: Request, res: Response) => {
             relations.criteria.forEach(async (criteria: any) => {
                 await prisma.acceptanceCriteria.create({data: {criteria, relation_id: relation.id}})
             })
-
         });
 
         setTimeout(async ()=>{
@@ -159,11 +158,26 @@ const updateUxCorrelation  = async (req: Request, res: Response) => {
         return handleResponse.handleErrorRes({code: "ERR-02", res})
     }
     const {id, ...data} = req.body
-    await prisma.uxCorrelation.update({data, where: {id: id}})
+    const ux = await prisma.uxCorrelation.update({data, where: {id: id}})
+    const relation = await prisma.relationUXAC.findMany({where: {ux_id: id}})
+    relation.forEach(async (r: any) => {
+        await prisma.relationUXAC.delete({where: {id: r.id}})
+    })
+    const ac = await generateAC({dimension_number: ux.dimension, description: ux.description, persona: ux.persona_id, verb: ux.verb_id})
+    const acparsed = JSON.parse(ac?.replace(/^```json\n/, "").replace(/\n```$/, "")??"")
+
+    acparsed.acceptanceCriteria.forEach(async (relations: any) => {
+        const relation = await prisma.relationUXAC.create({data: {relation: relations.relation, ux_id: ux.id}})
+        relations.criteria.forEach(async (criteria: any) => {
+            await prisma.acceptanceCriteria.create({data: {criteria, relation_id: relation.id}})
+        })
+    });
+
+
     setTimeout(async ()=>{
         const result = await prisma.uxCorrelation.findUnique({
             where:{
-            id: id.toString()
+            id: ux.id.toString()
         },
         select: {
             id: true,
@@ -193,8 +207,8 @@ const updateUxCorrelation  = async (req: Request, res: Response) => {
             verb: true
         }
       })
-      return handleResponse.handleCreateRes({code: "UPD-01", res, item, content: result})
-    }, 500)
+      return handleResponse.handleUpdateRes({code: "UPD-01", res, item, content: result})
+    }, 3000)
   } catch(e: any){
     return handleResponse.handleErrorRes({code: e.code, res, item})
   }

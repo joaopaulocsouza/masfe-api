@@ -54,14 +54,14 @@ const updateUser = async (req: Request, res: Response) => {
   if(!validate){
       handleResponse.handleErrorRes({code: "ERR-02", res})
   }
-  
+
   const {id, ...data} = req.body
   if(!id){
     return handleResponse.handleErrorRes({code: "ERR-01", res, item })
   }
   try {
     await prisma.user.update({data, where: {id: id}})
-    return handleResponse.handleCreateRes({code: "UPD-01", res, item })
+    return handleResponse.handleUpdateRes({code: "UPD-01", res, item })
   }catch(e: any){
     return handleResponse.handleErrorRes({code: e.code, res, item })
   }

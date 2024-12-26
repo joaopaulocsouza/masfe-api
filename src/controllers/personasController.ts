@@ -16,8 +16,8 @@ const createPersona = async (req: Request, res: Response) => {
         if(!validate){
             handleResponse.handleErrorRes({code: "ERR-02", res})
         }
-        await prisma.persona.create({data: {...req.body, user_id: validate, age: Number(req.body.age)}})
-        return handleResponse.handleCreateRes({code: "CRT-01", res, item})
+        const persona = await prisma.persona.create({data: {...req.body, user_id: validate, age: Number(req.body.age)}})
+        return handleResponse.handleCreateRes({code: "CRT-01", res, item,  content: persona})
     }catch(e: any){
         return handleResponse.handleErrorRes({code: e.code, res, item})
     }
@@ -61,8 +61,8 @@ const updatePersona = async (req: Request, res: Response) => {
         return handleResponse.handleErrorRes({code: "ERR-02", res})
     }
     const {id, ...data} = req.body
-    await prisma.persona.update({data, where: {id: id}})
-    return handleResponse.handleCreateRes({code: "UPD-01", res})
+    const persona = await prisma.persona.update({data, where: {id: id}})
+    return handleResponse.handleUpdateRes({code: "UPD-01", res, item, content: persona})
   } catch(e: any){
     return handleResponse.handleErrorRes({code: e.code, res, item})
   }
@@ -77,7 +77,7 @@ const deletePersona = async (req: Request, res: Response) => {
             return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
         await prisma.persona.delete({where: {id: id?.toString()}});
-        return handleResponse.handleErrorRes({code: "DEL-01", res, item})
+        return handleResponse.handleDeleteRes({code: "DEL-01", res, item})
     }catch(e: any){
         return handleResponse.handleErrorRes({code: e.code, res, item})
     }

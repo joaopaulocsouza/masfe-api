@@ -53,7 +53,6 @@ export const handleCreateRes = ({code, res, item, content}: Props) => {
             })
             return
         case "CRT-02":
-            console.log(item)
             res.status(400).json({
                 code: "CRT-02",
                 message: item+resCodes["CRT-02"]
@@ -69,12 +68,13 @@ export const handleCreateRes = ({code, res, item, content}: Props) => {
 
 }
 
-export const handleUpdateRes = ({code, res, item}: Props) => {
+export const handleUpdateRes = ({code, res, item, content}: Props) => {
     switch(code){
         case "UPD-01": 
             res.status(201).json({
                 code: "UPD-01",
-                message: item+resCodes["UPD-01"]
+                message: item+resCodes["UPD-01"],
+                content
             })
             return
     }
@@ -110,7 +110,6 @@ export const handleRegisterRes = ({code, res, content}: Props) => {
                 code: "RGS-01",
                 message: resCodes["RGS-01"]
             })
-            console.log(res)
             return
         }
 }
@@ -122,7 +121,6 @@ export const handleLoginRes = ({code, res, content}: Props) => {
                 code: "LGN-01",
                 message: resCodes["LGN-01"]
             })
-            console.log(res)
             return
         case "LGN-02": 
             res.status(401).json({

@@ -8,7 +8,6 @@ const getDashboard = async (req: Request, res: Response) => {
     try{        
         const {token} = req.cookies
         const validate = await verifyJWT(token)
-        console.log(validate)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})
         }
@@ -55,7 +54,6 @@ const getDashboard = async (req: Request, res: Response) => {
         
         return handleResponse.handleGetRes({code: 'GET-01', res, content: {garret: resGarret, verbs: resVerbs, uxCorrelations}})
     }catch(e: any){
-        // console.log("aqui",e)
         return handleResponse.handleErrorRes({code: e.code, res})
     }
 
