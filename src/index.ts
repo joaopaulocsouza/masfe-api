@@ -17,10 +17,16 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: ['https://mas-fe.vercel.app', 'https://masfe.onrender.com'], 
+  origin: [ 'https://masfe.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true,
 }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://masfe.onrender.com');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next()
+})
 app.use(cookieParser());
 
 app.use('/users', userRoutes)

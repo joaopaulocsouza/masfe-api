@@ -27,6 +27,7 @@ const login = async (req: Request, res: Response) => {
             const verifyCredentials = await compare(req.body.password, user?.password)
             if(verifyCredentials){
                 const token = jwt.sign({id: user.id}, process.env.SECRET!, {expiresIn: ExpiresTime})
+                console.log("setando ", token, user)
                 return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
             }
             else return handleResponse.handleLoginRes({code: "LGN-02", res} )

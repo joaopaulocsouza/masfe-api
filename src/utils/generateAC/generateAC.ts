@@ -20,16 +20,16 @@ const getDimension = (dimension: number): "Eficiência"|"Eficácia" => {
 
 const getPrompt = async ({dimension_number, description, persona, verb}: Props) => {
     const dimension: "Eficiência" | "Eficácia" = getDimension(dimension_number)
-    const userNeeds = await prisma.verbGarret.findMany({where: {garret_id: '1'}, select: {verb: {select: {verb: true}}}})
-    const functionalSpecifications = await prisma.verbGarret.findMany({where: {garret_id: '2'}, select: {verb: {select: {verb: true}}}})
-    const interactionDesign = await prisma.verbGarret.findMany({where: {garret_id: '1'}, select: {verb: {select: {verb: true}}}})
-    const interfaceDesign = await prisma.verbGarret.findMany({where: {garret_id: '4'}, select: {verb: {select: {verb: true}}}})
-    const informationDesign = await prisma.verbGarret.findMany({where: {garret_id: '5'}, select: {verb: {select: {verb: true}}}})
-    const productGoals = await prisma.verbGarret.findMany({where: {garret_id: '6'}, select: {verb: {select: {verb: true}}}})
-    const contentRequirements = await prisma.verbGarret.findMany({where: {garret_id: '7'}, select: {verb: {select: {verb: true}}}})
-    const informationArchitecture = await prisma.verbGarret.findMany({where: {garret_id: '8'}, select: {verb: {select: {verb: true}}}})
-    const navigationDesign = await prisma.verbGarret.findMany({where: {garret_id: '9'}, select: {verb: {select: {verb: true}}}})
-    const visualDesign = await prisma.verbGarret.findMany({where: {garret_id: '10'}, select: {verb: {select: {verb: true}}}})
+    const userNeeds = await prisma.verbGarret.findMany({where: {garret_id: '1', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const functionalSpecifications = await prisma.verbGarret.findMany({where: {garret_id: '2', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const interactionDesign = await prisma.verbGarret.findMany({where: {garret_id: '3', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const interfaceDesign = await prisma.verbGarret.findMany({where: {garret_id: '4', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const informationDesign = await prisma.verbGarret.findMany({where: {garret_id: '5', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const productGoals = await prisma.verbGarret.findMany({where: {garret_id: '6', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const contentRequirements = await prisma.verbGarret.findMany({where: {garret_id: '7', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const informationArchitecture = await prisma.verbGarret.findMany({where: {garret_id: '8', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const navigationDesign = await prisma.verbGarret.findMany({where: {garret_id: '9', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
+    const visualDesign = await prisma.verbGarret.findMany({where: {garret_id: '10', verb: {dimension: dimension_number}}, select: {verb: {select: {verb: true}}}})
 
     let msg = `
         Crie critérios de aceitação para histórias de usuário, integrando a relação entre
