@@ -24,7 +24,7 @@ const createPersona = async (req: Request, res: Response) => {
 };
 
 const getPersona = async (req: Request, res: Response) => {
-  const {id, user_id} = req.query
+  const {id, user: user_id} = req.query
   try{      
       const {token} = req.cookies
       const validate = await verifyJWT(token)
