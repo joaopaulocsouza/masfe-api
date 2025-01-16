@@ -18,7 +18,7 @@ const createUser = async (req: Request, res: Response) => {
     const {id} = await prisma.user.create({data: {...req.body, password}})
     const token = jwt.sign({id}, process.env.SECRET!, {expiresIn: ExpiresTime})
 
-    return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
+    return handleResponse.handleLoginRes({code: "RGS-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
   }catch(e: any){
     return handleResponse.handleErrorRes({code: e.code, res, item })
   }
@@ -35,10 +35,27 @@ const getAllUsers = async (req: Request, res: Response) => {
     if(id){
       const users = await prisma.user.findUnique({where: {
         id: id.toString(),
-      }})
+      },
+      select: {
+       birthday: true, 
+       email: true, 
+       id: true, 
+       gender: true, 
+       name: true, 
+       occupation: true, 
+      }
+      })
       return handleResponse.handleGetRes({code: "GET-01", res, item, content: users })
     } else {
-      const users = await prisma.user.findMany()
+      const users = await prisma.user.findMany({
+      select: {
+       birthday: true, 
+       email: true, 
+       id: true, 
+       gender: true, 
+       name: true, 
+       occupation: true, 
+      }})
       return handleResponse.handleGetRes({code: "GET-01", res, item, content: users })
     }
   }
