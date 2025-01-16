@@ -14,12 +14,17 @@ const createUser = async (req: Request, res: Response) => {
     return handleResponse.handleCreateRes({code: "CRT-02", res, item })
   }
   try{
+    console.log("entrou")
     const password = await encrypt(req.body.password)
+    console.log(password)
     const {id} = await prisma.user.create({data: {...req.body, password}})
+    console.log(id)
     const token = jwt.sign({id}, process.env.SECRET!, {expiresIn: ExpiresTime})
+    console.log(token)
 
-    return handleResponse.handleLoginRes({code: "RGS-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
+    return handleResponse.handleRegisterRes({code: "RGS-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
   }catch(e: any){
+    console.log("saiu")
     return handleResponse.handleErrorRes({code: e.code, res, item })
   }
 };

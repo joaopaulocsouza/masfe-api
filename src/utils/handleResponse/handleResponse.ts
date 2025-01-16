@@ -143,4 +143,4 @@ export const handleLoginRes = ({code, res, content}: Props) => {
     }
 }
 
-export default {handleCreateRes, handleDeleteRes, handleErrorRes, handleLoginRes, handleUpdateRes, handleGetRes}
+export default {handleCreateRes, handleDeleteRes, handleErrorRes, handleLoginRes, handleUpdateRes, handleGetRes, handleRegisterRes}
