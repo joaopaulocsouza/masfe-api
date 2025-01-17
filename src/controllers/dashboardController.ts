@@ -6,7 +6,6 @@ import handleResponse from "../utils/handleResponse/handleResponse";
 
 const getDashboard = async (req: Request, res: Response) => {
     try{        
-        console.log(req.cookies)
         const {token} = req.cookies
         const validate = await verifyJWT(token)
         if(!validate){

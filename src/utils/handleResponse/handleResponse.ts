@@ -106,7 +106,7 @@ export const handleGetRes = ({code, res, content}: Props) => {
 export const handleRegisterRes = ({code, res, content}: Props) => {
     switch(code){
         case "RGS-01": 
-            res.cookie("token", content.token, {...content.options, sameSite: "lax", secure: true, domain: "onrender.com"}).json({
+            res.cookie("token", content.token, {...content.options, sameSite: "none", secure: true}).json({
                 code: "RGS-01",
                 message: resCodes["RGS-01"]
             })
@@ -117,7 +117,7 @@ export const handleRegisterRes = ({code, res, content}: Props) => {
 export const handleLoginRes = ({code, res, content}: Props) => {
  switch(code){
         case "LGN-01": 
-            res.cookie("token", content.token, {...content.options, sameSite: "lax", secure: true, domain: "onrender.com", path: "/"}).json({
+            res.cookie("token", content.token, {...content.options, sameSite: "none", secure: true, path: "/"}).json({
                 code: "LGN-01",
                 message: resCodes["LGN-01"]
             })

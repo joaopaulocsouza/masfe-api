@@ -20,7 +20,6 @@ const createVerb = async (req: Request, res: Response) => {
         const result = await prisma.verb.create({data: {verb, dimension, user_id: validate!}})
         setTimeout(async () => {
             GarretArr.forEach(async (e, idx) => {
-                if(rest[e])  console.log({verb_id: result.id, garret_id: (idx+1).toString()})
                 if(rest[e]) await prisma.verbGarret.create({data: {verb_id: result.id, garret_id: (idx+1).toString()}})           
                 });
         }, 2000)

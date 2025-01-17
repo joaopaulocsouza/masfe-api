@@ -123,7 +123,6 @@ const getPrompt = async ({dimension_number, description, persona, verb}: Props) 
 
         Retorne em um formato json, constituido pelos campos {userStory: '', acceptanceCriteria: [{relation: '', criteria: []}]}
     `
-    console.log(msg)
 
     return msg
 }

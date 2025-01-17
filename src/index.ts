@@ -15,7 +15,6 @@ dotenv.config();
 const app = express();
 app.use(express.json()); 
 
-
 app.use(cors({
   origin: [ 'https://masfe.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
