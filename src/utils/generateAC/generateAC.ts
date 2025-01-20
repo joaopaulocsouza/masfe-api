@@ -137,7 +137,7 @@ export const generateAC = async ({dimension_number, description, persona: person
         verb: verb?.verb??""
     })
     const res = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [{"role": 'user', "content": prompt}],
     })
     return res.choices[0].message.content

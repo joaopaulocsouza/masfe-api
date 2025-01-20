@@ -118,7 +118,12 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
             select: {
                 id: true,
                 name: true,
-                persona: true,
+                persona: {
+                    select: {
+                        name: true
+                    }
+                },
+                dimension: true,
                 user: {
                     select: {
                         name: true
@@ -135,7 +140,12 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
         select: {
             id: true,
             name: true,
-            persona: true,
+            persona: {
+                select: {
+                    name: true
+                }
+            },
+            dimension: true,
             user: {
                 select: {
                     name: true
