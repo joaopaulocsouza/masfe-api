@@ -28,8 +28,12 @@ const login = async (req: Request, res: Response) => {
             if(verifyCredentials){
                 const token = jwt.sign({id: user.id}, process.env.SECRET!, {expiresIn: ExpiresTime})
                 return handleResponse.handleLoginRes({code: "LGN-01", res, content: {token, options: {maxAge: ExpiresTime, httpOnly: true} }})
+            }else{
+                return handleResponse.handleLoginRes({code: "LGN-02", res} )
             }
-            else return handleResponse.handleLoginRes({code: "LGN-02", res} )
+        }
+        else{
+            return handleResponse.handleLoginRes({code: "LGN-02", res} )
         }
     }catch(e: any){
         return handleResponse.handleErrorRes({code: e.code, res, item: "Usuário"})

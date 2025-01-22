@@ -13,7 +13,7 @@ const createUxCorrelation = async (req: Request, res: Response) => {
         return handleResponse.handleCreateRes({code: "CRT-03", res, item})
     }
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
             return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -73,7 +73,7 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
   const {id, user_id} = req.query
 
   try{      
-    const {token} = req.cookies
+    const token = req.headers.authorization??''
     const validate = await verifyJWT(token)
     if(!validate){
         return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -162,7 +162,7 @@ const getUxCorrelation  = async (req: Request, res: Response) => {
 
 const updateUxCorrelation  = async (req: Request, res: Response) => {
   try {
-    const {token} = req.cookies
+    const token = req.headers.authorization??''
     const validate = await verifyJWT(token)
     if(!validate){
         return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -227,7 +227,7 @@ const updateUxCorrelation  = async (req: Request, res: Response) => {
 const deleteUxCorrelation  = async (req: Request, res: Response) => {
     const { id } = req.query
     try{  
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
             return handleResponse.handleErrorRes({code: "ERR-02", res})

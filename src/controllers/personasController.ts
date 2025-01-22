@@ -11,7 +11,7 @@ const createPersona = async (req: Request, res: Response) => {
         return handleResponse.handleCreateRes({code: "CRT-03", res, item})
     }
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
             handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -26,7 +26,7 @@ const createPersona = async (req: Request, res: Response) => {
 const getPersona = async (req: Request, res: Response) => {
   const {id, user: user_id} = req.query
   try{      
-      const {token} = req.cookies
+      const token = req.headers.authorization??''
       const validate = await verifyJWT(token)
       if(!validate){
           return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -55,7 +55,7 @@ const getPersona = async (req: Request, res: Response) => {
 
 const updatePersona = async (req: Request, res: Response) => {
   try {
-    const {token} = req.cookies
+    const token = req.headers.authorization??''
     const validate = await verifyJWT(token)
     if(!validate){
         return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -71,7 +71,7 @@ const updatePersona = async (req: Request, res: Response) => {
 const deletePersona = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
             return handleResponse.handleErrorRes({code: "ERR-02", res})

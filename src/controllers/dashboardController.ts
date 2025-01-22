@@ -6,7 +6,7 @@ import handleResponse from "../utils/handleResponse/handleResponse";
 
 const getDashboard = async (req: Request, res: Response) => {
     try{        
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})

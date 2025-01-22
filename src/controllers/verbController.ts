@@ -12,7 +12,7 @@ const createVerb = async (req: Request, res: Response) => {
        return handleResponse.handleCreateRes({code: "CRT-03", res})
     }
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -51,7 +51,7 @@ const getVerb = async (req: Request, res: Response) => {
     const {id, user_verbs} = req.query
     let garret = {}
     try{ 
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -130,7 +130,7 @@ const getVerb = async (req: Request, res: Response) => {
 const updateVerb = async (req: Request, res: Response) => {
     const {verb, dimension, removeGarret, id, ...rest} = req.body 
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})
@@ -187,7 +187,7 @@ const updateVerb = async (req: Request, res: Response) => {
 const deleteVerb = async (req: Request, res: Response) => {
     const { id } = req.query
     try{
-        const {token} = req.cookies
+        const token = req.headers.authorization??''
         const validate = await verifyJWT(token)
         if(!validate){
            return handleResponse.handleErrorRes({code: "ERR-02", res})
