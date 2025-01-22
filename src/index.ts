@@ -9,6 +9,7 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 import cors from 'cors'
 import recoverRoutes from "./routes/recoverRoutes";
 import cookieParser from "cookie-parser";
+import path = require("path");
 
 
 dotenv.config();
@@ -16,25 +17,32 @@ const app = express();
 app.use(express.json()); 
 
 app.use(cors({
-  origin: [ 'https://masfe.onrender.com'], 
+  origin: [ 'https://masfe.onrender.com','https://masfe.vercel.app/'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true,
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://masfe.onrender.com');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next()
-})
 app.use(cookieParser());
 
-app.use('/users', userRoutes)
-app.use('/verbs', verbRoutes)
-app.use('/personas', personaRoutes)
-app.use('/ux-correlation', uxCorrelationRoutes)
-app.use('/auth', authRoutes)
-app.use('/dashboard', dashboardRoutes)
-app.use('/recover', recoverRoutes)
+
+app.use('/api/users', userRoutes)
+app.use('/api/verbs', verbRoutes)
+app.use('/api/personas', personaRoutes)
+app.use('/api/ux-correlation', uxCorrelationRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/recover', recoverRoutes)
+
+// const frontendPath = path.join(__dirname, '../web/dist');
+// app.use(express.static(frontendPath));
+// app.use('*', (req, res) => {
+//   res.sendFile(path.join(frontendPath, 'index.html'))
+// })
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => {
+ res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
