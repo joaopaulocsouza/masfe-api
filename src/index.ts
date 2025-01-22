@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json()); 
 
 app.use(cors({
-  origin: [ 'https://masfe.onrender.com','https://masfe.vercel.app/'], 
+  origin: [ 'https://masfe.onrender.com','https://masfe.vercel.app','https://masfe-app.vercel.app','https://masfe.tec.br','http://localhost:3001'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true,
 }));
@@ -33,11 +33,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/recover', recoverRoutes)
 
-// const frontendPath = path.join(__dirname, '../web/dist');
-// app.use(express.static(frontendPath));
-// app.use('*', (req, res) => {
-//   res.sendFile(path.join(frontendPath, 'index.html'))
-// })
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req, res) => {
