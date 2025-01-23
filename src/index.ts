@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json()); 
 
 app.use(cors({
-  origin: [ 'https://masfe.onrender.com', 'http://localhost:5173'], 
+  origin: [ 'https://masfe.onrender.com', 'https://masfe.tec.br'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true,
 }));
